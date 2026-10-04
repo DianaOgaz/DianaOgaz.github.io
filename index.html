@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<title>Diana Ogaz · Fullstack Dev</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg0:#060010;
+  --bg1:#0d001f;
+  --bg2:#160030;
+  --pink:#ff6ec7;
+  --pink2:#ffb3e0;
+  --purple:#9b5de5;
+  --purple2:#c77dff;
+  --cyan:#00f5d4;
+  --orange:#ff9d4d;
+  --star:#fff8e7;
+  --text:#f0e0ff;
+  --muted:#b09fd0;
+  --card:rgba(30,0,60,0.7);
+  --border:rgba(155,93,229,0.3);
+}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg0);
+  color:var(--text);
+  font-family:'Nunito',sans-serif;
+  cursor:none;
+  overflow-x:hidden;
+}
+
+/* ── CURSOR ── */
+#cursor{
+  position:fixed;pointer-events:none;z-index:9999;
+  font-size:26px;
+  transform:translate(-50%,-50%);
+  transition:transform .07s ease;
+  filter:drop-shadow(0 0 8px var(--pink));
+  line-height:1;user-select:none;
+}
+#cursor.clicking{transform:translate(-50%,-50%) scale(0.7) rotate(-15deg)}
+
+/* ── PETALS CANVAS ── */
+#petal-canvas{
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  pointer-events:none;z-index:2;
+}
+
+/* ── STARS CANVAS ── */
+#stars-canvas{
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  pointer-events:none;z-index:0;
+}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 40px;
+  background:rgba(6,0,16,0.8);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);
+}
+.nav-logo{
+  font-family:'Orbitron',monospace;font-size:.95rem;font-weight:900;
+  color:var(--pink);letter-spacing:.08em;
+  text-shadow:0 0 14px var(--pink);
+}
+.nav-logo span{color:var(--cyan)}
+.nav-links{display:flex;gap:26px;list-style:none}
+.nav-links a{
+  font-size:.82rem;font-weight:700;color:var(--muted);
+  text-decoration:none;letter-spacing:.04em;transition:color .2s;
+}
+.nav-links a:hover{color:var(--pink2);text-shadow:0 0 8px var(--pink)}
+
+/* ── HERO ── */
+#hero{
+  position:relative;min-height:100vh;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;z-index:1;
+}
+.sky{
+  position:absolute;inset:0;
+  background:linear-gradient(180deg,
+    #080018 0%,#160040 20%,#3a0068 38%,
+    #7a1fa0 52%,#c94f2a 66%,#ff8c42 78%,
+    #ffd580 90%,#fff4b0 100%);
+  z-index:0;
+}
+.moon{
+  position:absolute;top:11%;right:17%;
+  width:72px;height:72px;border-radius:50%;
+  background:radial-gradient(circle at 38% 38%,#fff8d0,#ffd97a 60%,#e8a030);
+  box-shadow:0 0 30px 10px rgba(255,200,80,.4),0 0 70px 25px rgba(255,160,40,.15);
+  z-index:1;
+}
+/* Small decorative stars in hero */
+.hero-sparkle{
+  position:absolute;font-size:1rem;z-index:1;
+  animation:sparkle 2s ease-in-out infinite alternate;
+}
+@keyframes sparkle{0%{opacity:.3;transform:scale(.8)}100%{opacity:1;transform:scale(1.2)}}
+
+.city{
+  position:absolute;bottom:0;left:0;right:0;height:210px;
+  background:var(--bg0);z-index:2;
+  clip-path:polygon(
+    0% 100%,0% 55%,2% 55%,2% 30%,4% 30%,4% 20%,6% 20%,6% 30%,
+    8% 30%,8% 40%,9% 40%,9% 25%,11% 25%,11% 15%,12% 15%,12% 25%,
+    13% 25%,13% 40%,15% 40%,15% 35%,16% 35%,16% 20%,17% 20%,
+    17% 10%,18% 10%,18% 5%,19% 5%,19% 10%,20% 10%,20% 20%,
+    21% 20%,21% 35%,22% 35%,22% 45%,24% 45%,24% 30%,25% 30%,
+    25% 18%,26% 18%,26% 30%,27% 30%,27% 45%,29% 45%,29% 38%,
+    31% 38%,31% 22%,32% 22%,32% 14%,33% 14%,33% 8%,34% 8%,
+    34% 14%,35% 14%,35% 22%,36% 22%,36% 38%,38% 38%,38% 50%,
+    40% 50%,40% 32%,42% 32%,42% 18%,43% 18%,43% 12%,44% 12%,
+    44% 18%,45% 18%,45% 32%,47% 32%,47% 42%,49% 42%,49% 28%,
+    51% 28%,51% 15%,52% 15%,52% 8%,53% 8%,53% 3%,54% 3%,
+    54% 8%,55% 8%,55% 15%,56% 15%,56% 28%,58% 28%,58% 42%,
+    60% 42%,60% 35%,62% 35%,62% 22%,63% 22%,63% 32%,65% 32%,
+    65% 48%,67% 48%,67% 36%,69% 36%,69% 20%,70% 20%,70% 12%,
+    71% 12%,71% 20%,72% 20%,72% 36%,74% 36%,74% 48%,76% 48%,
+    76% 38%,78% 38%,78% 25%,79% 25%,79% 38%,80% 38%,80% 50%,
+    82% 50%,82% 40%,84% 40%,84% 28%,85% 28%,85% 18%,86% 18%,
+    86% 28%,87% 28%,87% 40%,88% 40%,88% 52%,90% 52%,90% 42%,
+    92% 42%,92% 30%,93% 30%,93% 20%,94% 20%,94% 30%,95% 30%,
+    95% 42%,96% 42%,96% 55%,98% 55%,98% 100%,100% 100%);
+}
+.city-glow{
+  position:absolute;bottom:0;left:0;right:0;height:210px;
+  background:linear-gradient(180deg,rgba(155,93,229,.12) 0%,transparent 60%);
+  z-index:3;pointer-events:none;
+}
+.hero-content{
+  position:relative;z-index:4;text-align:center;padding:0 20px;margin-top:-70px;
+}
+.hero-tag{
+  display:inline-block;font-size:.72rem;font-weight:800;
+  letter-spacing:.14em;color:var(--pink2);
+  background:rgba(255,110,199,.12);
+  border:1.5px solid rgba(255,110,199,.4);
+  border-radius:30px;padding:5px 18px;margin-bottom:20px;
+  box-shadow:0 0 14px rgba(255,110,199,.2);
+}
+.hero-name{
+  font-family:'Orbitron',monospace;
+  font-size:clamp(2.4rem,6vw,4.4rem);font-weight:900;line-height:1.1;
+  background:linear-gradient(135deg,var(--pink) 0%,var(--purple2) 50%,var(--cyan) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  filter:drop-shadow(0 0 22px rgba(255,110,199,.45));
+  margin-bottom:14px;
+}
+.hero-role{
+  font-size:1.05rem;color:var(--muted);
+  margin-bottom:34px;letter-spacing:.03em;
+}
+.hero-role em{color:var(--pink2);font-style:normal;font-weight:800}
+.hero-btns{display:flex;gap:18px;justify-content:center;flex-wrap:wrap}
+
+/* ── KAWAII BUTTONS ── */
+.kbtn{
+  position:relative;display:inline-flex;align-items:center;gap:8px;
+  padding:13px 30px;border-radius:50px;
+  font-family:'Nunito',sans-serif;font-size:.9rem;font-weight:800;
+  letter-spacing:.04em;text-decoration:none;border:none;
+  cursor:none;transition:transform .18s,box-shadow .18s,filter .18s;
+}
+.kbtn::after{
+  content:'';position:absolute;inset:-2px;border-radius:52px;
+  background:inherit;filter:blur(10px);opacity:0;z-index:-1;
+  transition:opacity .2s;
+}
+.kbtn:hover::after{opacity:.6}
+.kbtn:hover{transform:translateY(-4px) scale(1.05)}
+.kbtn:active{transform:translateY(-1px) scale(.98)}
+
+.kbtn-primary{
+  background:linear-gradient(135deg,#c44dff,#ff6ec7);
+  color:#fff;
+  box-shadow:0 4px 22px rgba(196,77,255,.45),0 1px 4px rgba(0,0,0,.3);
+}
+.kbtn-primary:hover{box-shadow:0 8px 32px rgba(196,77,255,.65),0 2px 8px rgba(0,0,0,.3)}
+
+.kbtn-secondary{
+  background:rgba(0,245,212,.08);
+  color:var(--cyan);
+  border:1.5px solid rgba(0,245,212,.5);
+  box-shadow:0 0 16px rgba(0,245,212,.2);
+}
+.kbtn-secondary:hover{
+  background:rgba(0,245,212,.14);
+  box-shadow:0 0 28px rgba(0,245,212,.4);
+}
+
+.kbtn-blog{
+  background:linear-gradient(135deg,#2d0060,#7b2fff,#ff6ec7);
+  background-size:200% 200%;
+  animation:blogGrad 3s ease infinite;
+  color:#fff;font-size:1rem;padding:16px 44px;
+  box-shadow:0 4px 28px rgba(123,47,255,.5),0 1px 4px rgba(0,0,0,.3);
+}
+.kbtn-blog:hover{box-shadow:0 8px 40px rgba(255,110,199,.6),0 2px 8px rgba(0,0,0,.3)}
+@keyframes blogGrad{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+
+/* Heart decoration on buttons */
+.kbtn-primary::before{
+  content:'♡';position:absolute;top:-10px;right:-8px;
+  font-size:.85rem;color:var(--pink2);
+  animation:heartpop 2s ease-in-out infinite;
+}
+@keyframes heartpop{
+  0%,100%{transform:scale(1) rotate(-10deg)}
+  50%{transform:scale(1.3) rotate(5deg)}
+}
+
+/* ── SECTIONS ── */
+section{
+  position:relative;z-index:1;
+  padding:80px 40px;max-width:1020px;margin:0 auto;
+}
+.sec-label{
+  font-family:'Orbitron',monospace;font-size:.68rem;font-weight:700;
+  letter-spacing:.2em;color:var(--pink);
+  text-shadow:0 0 8px var(--pink);margin-bottom:8px;
+}
+.sec-title{
+  font-family:'Orbitron',monospace;
+  font-size:clamp(1.4rem,3vw,2rem);font-weight:900;
+  color:var(--text);margin-bottom:42px;line-height:1.2;
+}
+.sec-title span{color:var(--cyan)}
+
+/* ── ABOUT ── */
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
+@media(max-width:640px){.about-grid{grid-template-columns:1fr}}
+.about-text p{font-size:.95rem;line-height:1.85;color:var(--muted);margin-bottom:14px}
+.about-text p strong{color:var(--text)}
+.about-stats{display:flex;flex-direction:column;gap:14px}
+
+.stat-card{
+  background:var(--card);backdrop-filter:blur(8px);
+  border:1.5px solid var(--border);border-radius:20px;
+  padding:18px 22px;display:flex;align-items:center;gap:16px;
+  box-shadow:0 4px 24px rgba(155,93,229,.1);
+  transition:border-color .2s,box-shadow .2s,transform .2s;
+}
+.stat-card:hover{
+  border-color:rgba(255,110,199,.5);
+  box-shadow:0 6px 30px rgba(255,110,199,.2);
+  transform:translateX(4px);
+}
+.stat-icon{font-size:2rem}
+.stat-val{
+  font-family:'Orbitron',monospace;font-size:1.35rem;font-weight:700;
+  color:var(--pink);text-shadow:0 0 10px var(--pink);
+}
+.stat-desc{font-size:.78rem;color:var(--muted);margin-top:2px}
+
+/* ── SKILLS ── */
+.skills-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:18px}
+.skill-cat{
+  background:var(--card);backdrop-filter:blur(8px);
+  border:1.5px solid var(--border);border-radius:22px;padding:24px;
+  transition:border-color .2s,transform .2s,box-shadow .2s;
+}
+.skill-cat:hover{
+  border-color:rgba(199,125,255,.5);
+  transform:translateY(-5px);
+  box-shadow:0 10px 35px rgba(155,93,229,.2);
+}
+.skill-cat-title{
+  font-family:'Orbitron',monospace;font-size:.7rem;font-weight:700;
+  letter-spacing:.1em;color:var(--cyan);margin-bottom:14px;
+  display:flex;align-items:center;gap:8px;
+}
+.skill-tags{display:flex;flex-wrap:wrap;gap:8px}
+.skill-tag{
+  font-size:.76rem;font-weight:700;padding:5px 14px;border-radius:30px;
+  background:rgba(155,93,229,.15);border:1px solid rgba(155,93,229,.3);
+  color:var(--text);letter-spacing:.02em;
+  transition:background .15s,transform .15s;
+}
+.skill-tag:hover{background:rgba(155,93,229,.3);transform:scale(1.06)}
+.skill-tag.pink{background:rgba(255,110,199,.12);border-color:rgba(255,110,199,.35);color:var(--pink2)}
+.skill-tag.cyan{background:rgba(0,245,212,.08);border-color:rgba(0,245,212,.3);color:var(--cyan)}
+.skill-tag.orange{background:rgba(255,157,77,.1);border-color:rgba(255,157,77,.3);color:var(--orange)}
+
+/* ── TIMELINE ── */
+.timeline{display:flex;flex-direction:column}
+.tl-item{display:grid;grid-template-columns:20px 1fr;gap:0 22px}
+.tl-line{display:flex;flex-direction:column;align-items:center}
+.tl-dot{
+  width:16px;height:16px;border-radius:50%;
+  background:var(--pink);box-shadow:0 0 12px var(--pink);
+  flex-shrink:0;margin-top:5px;
+  animation:pulse-dot 2s ease-in-out infinite;
+}
+@keyframes pulse-dot{
+  0%,100%{box-shadow:0 0 8px var(--pink)}
+  50%{box-shadow:0 0 20px var(--pink),0 0 35px rgba(255,110,199,.4)}
+}
+.tl-connector{width:2px;flex:1;min-height:18px;margin:5px 0;
+  background:linear-gradient(180deg,var(--pink),var(--purple))}
+.tl-body{padding-bottom:38px}
+.tl-period{font-size:.7rem;font-weight:800;letter-spacing:.12em;color:var(--purple2);margin-bottom:4px}
+.tl-role{font-family:'Orbitron',monospace;font-size:.88rem;font-weight:700;color:var(--text);margin-bottom:3px}
+.tl-company{font-size:.83rem;color:var(--orange);font-weight:700;margin-bottom:10px}
+.tl-bullets{list-style:none;display:flex;flex-direction:column;gap:6px}
+.tl-bullets li{font-size:.85rem;line-height:1.65;color:var(--muted);padding-left:16px;position:relative}
+.tl-bullets li::before{content:'✦';position:absolute;left:0;color:var(--cyan);font-size:.65rem;top:3px}
+
+/* ── CREATIVE / BLOG ── */
+.creative-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+@media(max-width:640px){.creative-grid{grid-template-columns:1fr}}
+.creative-card{
+  background:var(--card);backdrop-filter:blur(8px);
+  border:1.5px solid var(--border);border-radius:26px;
+  padding:36px 28px;text-align:center;text-decoration:none;
+  display:flex;flex-direction:column;align-items:center;gap:14px;
+  transition:border-color .2s,transform .22s,box-shadow .22s;
+  position:relative;overflow:hidden;
+}
+.creative-card::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 0%,rgba(255,110,199,.08) 0%,transparent 70%);
+  pointer-events:none;
+}
+.creative-card:hover{
+  border-color:rgba(255,110,199,.55);
+  transform:translateY(-7px);
+  box-shadow:0 14px 40px rgba(255,110,199,.2);
+}
+.creative-icon{font-size:3rem;line-height:1;filter:drop-shadow(0 0 10px rgba(255,110,199,.5))}
+.creative-title{font-family:'Orbitron',monospace;font-size:.9rem;font-weight:700;color:var(--text)}
+.creative-desc{font-size:.83rem;color:var(--muted);line-height:1.7;max-width:26ch;margin:0 auto}
+.creative-link{
+  font-size:.78rem;font-weight:800;color:var(--pink2);
+  letter-spacing:.06em;text-shadow:0 0 6px var(--pink);
+}
+
+/* ── SOCIAL PILLS ── */
+.social-row{display:flex;flex-wrap:wrap;gap:16px;justify-content:center;margin-top:14px}
+.social-pill{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:14px 28px;border-radius:50px;text-decoration:none;
+  font-weight:800;font-size:.88rem;letter-spacing:.04em;
+  border:1.5px solid;transition:transform .18s,box-shadow .18s;
+}
+.social-pill:hover{transform:translateY(-3px) scale(1.05)}
+.social-pill.twitter{color:#1DA1F2;border-color:#1DA1F2;background:rgba(29,161,242,.07)}
+.social-pill.twitter:hover{box-shadow:0 0 22px rgba(29,161,242,.45)}
+.social-pill.twitch{color:#9147FF;border-color:#9147FF;background:rgba(145,71,255,.07)}
+.social-pill.twitch:hover{box-shadow:0 0 22px rgba(145,71,255,.45)}
+.social-pill.github{color:var(--text);border-color:var(--border);background:rgba(255,255,255,.04)}
+.social-pill.github:hover{box-shadow:0 0 22px rgba(255,255,255,.15)}
+.social-pill.linkedin{color:#60a5fa;border-color:#60a5fa;background:rgba(96,165,250,.07)}
+.social-pill.linkedin:hover{box-shadow:0 0 22px rgba(96,165,250,.4)}
+
+/* ── DIVIDER ── */
+.divider{
+  position:relative;z-index:1;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(155,93,229,.4),rgba(255,110,199,.4),rgba(155,93,229,.4),transparent);
+  max-width:1020px;margin:0 auto;
+}
+
+/* ── FOOTER ── */
+footer{
+  position:relative;z-index:1;text-align:center;
+  padding:28px 20px;
+  border-top:1px solid var(--border);
+  font-size:.8rem;color:var(--muted);letter-spacing:.04em;
+}
+footer span{color:var(--pink)}
+
+/* ── FLOATING EMOJIS ON CLICK ── */
+.float-emoji{
+  position:fixed;pointer-events:none;z-index:9990;
+  font-size:1.4rem;opacity:0;
+  animation:floatUp 2s ease-out forwards;
+}
+@keyframes floatUp{
+  0%{opacity:.9;transform:translateY(0) scale(1) rotate(0deg)}
+  100%{opacity:0;transform:translateY(-100px) scale(.5) rotate(20deg)}
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--bg0)}
+::-webkit-scrollbar-thumb{background:linear-gradient(var(--pink),var(--purple));border-radius:3px}
+</style>
+</head>
+<body>
+
+<div id="cursor">🐱</div>
+<canvas id="stars-canvas"></canvas>
+<canvas id="petal-canvas"></canvas>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">LunaSh<span>.dev</span></div>
+  <ul class="nav-links">
+    <li><a href="#about">about</a></li>
+    <li><a href="#skills">skills</a></li>
+    <li><a href="#experience">experience</a></li>
+    <li><a href="#creative">blog</a></li>
+    <li><a href="#social">contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero" style="max-width:100%;padding:0">
+  <div class="sky"></div>
+  <div class="moon"></div>
+  <div class="hero-sparkle" style="top:18%;left:12%;animation-delay:.3s">✦</div>
+  <div class="hero-sparkle" style="top:24%;left:28%;animation-delay:.9s;font-size:.6rem">★</div>
+  <div class="hero-sparkle" style="top:15%;right:28%;animation-delay:.5s;font-size:.7rem">✦</div>
+  <div class="hero-sparkle" style="top:30%;right:10%;animation-delay:1.2s">🌸</div>
+  <div class="hero-sparkle" style="top:40%;left:8%;animation-delay:.7s;font-size:.8rem">✦</div>
+  <div class="hero-content">
+    <div class="hero-tag">🌸 fullstack developer 🌸</div>
+    <h1 class="hero-name">Diana Ogaz</h1>
+    <p class="hero-role">Spring Boot · Angular 17 · Android · <em>kawaii code ♡</em></p>
+    <div class="hero-btns">
+      <a href="#experience" class="kbtn kbtn-primary">🐾 my work</a>
+      <a href="#social" class="kbtn kbtn-secondary">✉ contact me</a>
+    </div>
+  </div>
+  <div class="city"></div>
+  <canvas id="city-lights" style="position:absolute;bottom:0;left:0;width:100%;height:210px;z-index:3;pointer-events:none"></canvas>
+  <div class="city-glow"></div>
+</section>
+
+<!-- ABOUT -->
+<div class="divider"></div>
+<section id="about">
+  <p class="sec-label">✦ who i am</p>
+  <h2 class="sec-title">about <span>me</span></h2>
+  <div class="about-grid">
+    <div class="about-text">
+      <p>Hi! I'm <strong>Diana</strong>, a fullstack developer from <strong>Chihuahua, México</strong> 🌵</p>
+      <p>I build end-to-end solutions — from <strong>Spring Boot microservices</strong> and <strong>SQL stored procedures</strong> to <strong>Angular 17</strong> frontends and <strong>native Android apps</strong>. I enjoy modernizing legacy systems and creating clean, scalable architectures.</p>
+      <p>When I'm not coding I write <strong>poems & short stories</strong>, stream on Twitch and enthusiastically pet every cat I encounter. My aesthetic? Cyberpunk pastel. Obviously 🌸</p>
+    </div>
+    <div class="about-stats">
+      <div class="stat-card">
+        <div class="stat-icon">⚡</div>
+        <div><div class="stat-val">3+</div><div class="stat-desc">years of production experience</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🔄</div>
+        <div><div class="stat-val">2</div><div class="stat-desc">major legacy migrations (Java 8→11, Angular 8→17)</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🎯</div>
+        <div><div class="stat-val">100%</div><div class="stat-desc">on-time or early delivery rate</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🐾</div>
+        <div><div class="stat-val">∞</div><div class="stat-desc">cat enthusiasm</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<div class="divider"></div>
+<section id="skills">
+  <p class="sec-label">✦ what i use</p>
+  <h2 class="sec-title">technical <span>skills</span></h2>
+  <div class="skills-grid">
+    <div class="skill-cat">
+      <div class="skill-cat-title">☁ backend</div>
+      <div class="skill-tags">
+        <span class="skill-tag">Spring Boot</span><span class="skill-tag">REST APIs</span>
+        <span class="skill-tag">Microservices</span><span class="skill-tag">Java</span>
+        <span class="skill-tag">Stored Procedures</span><span class="skill-tag">SQL Server</span>
+        <span class="skill-tag">MySQL</span>
+      </div>
+    </div>
+    <div class="skill-cat">
+      <div class="skill-cat-title" style="color:var(--pink2)">🌸 frontend</div>
+      <div class="skill-tags">
+        <span class="skill-tag pink">Angular 17</span><span class="skill-tag pink">TypeScript</span>
+        <span class="skill-tag pink">Next.js</span><span class="skill-tag pink">JavaScript</span>
+        <span class="skill-tag pink">Bootstrap</span><span class="skill-tag pink">HTML / CSS</span>
+      </div>
+    </div>
+    <div class="skill-cat">
+      <div class="skill-cat-title" style="color:var(--orange)">📱 mobile</div>
+      <div class="skill-tags">
+        <span class="skill-tag orange">Android Studio</span>
+        <span class="skill-tag orange">Java 11 / 8</span>
+        <span class="skill-tag orange">Kotlin</span>
+      </div>
+    </div>
+    <div class="skill-cat">
+      <div class="skill-cat-title" style="color:var(--cyan)">🛠 tools & practices</div>
+      <div class="skill-tags">
+        <span class="skill-tag cyan">Git / GitHub</span><span class="skill-tag cyan">Figma (advanced)</span>
+        <span class="skill-tag cyan">Postman</span><span class="skill-tag cyan">Jira</span>
+        <span class="skill-tag cyan">Agile / Scrum</span><span class="skill-tag cyan">QA Testing</span>
+        <span class="skill-tag cyan">C#</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<div class="divider"></div>
+<section id="experience">
+  <p class="sec-label">✦ where i've been</p>
+  <h2 class="sec-title">experience <span>timeline</span></h2>
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-line">
+        <div class="tl-dot"></div>
+        <div class="tl-connector"></div>
+      </div>
+      <div class="tl-body">
+        <div class="tl-period">FEB 2024 — PRESENT</div>
+        <div class="tl-role">Fullstack Developer</div>
+        <div class="tl-company">Grupo Roga</div>
+        <ul class="tl-bullets">
+          <li>Architected RESTful microservices with Spring Boot consumed by native Android (Java 11/8) and Angular 17 SPA, enabling a fully decoupled, scalable system.</li>
+          <li>Led clean migrations: legacy Android Java 8→11 and Angular 8→17 with zero regression.</li>
+          <li>Optimized legacy stored procedures (SQL Server), reducing executive report load times by 40%.</li>
+          <li>Built reusable Angular 17 components integrated with REST APIs, cutting UI dev time ~15%.</li>
+          <li>Delivered all features on time or ahead of schedule across all Agile/Scrum sprints.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-line">
+        <div class="tl-dot" style="background:var(--purple2);box-shadow:0 0 12px var(--purple2)"></div>
+        <div class="tl-connector" style="background:linear-gradient(180deg,var(--purple2),var(--cyan))"></div>
+      </div>
+      <div class="tl-body">
+        <div class="tl-period">MAY 2023 — FEB 2024</div>
+        <div class="tl-role">Project Manager / Frontend Developer</div>
+        <div class="tl-company">Grupo de Seguros Promessa</div>
+        <ul class="tl-bullets">
+          <li>Managed backlog and QA cycles for a 5-person Agile team (Jira), 100% on-time delivery rate.</li>
+          <li>Developed and unit-tested frontend components integrated with REST APIs.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-line">
+        <div class="tl-dot" style="background:var(--cyan);box-shadow:0 0 12px var(--cyan)"></div>
+      </div>
+      <div class="tl-body">
+        <div class="tl-period">JUN 2022 — DEC 2022</div>
+        <div class="tl-role">Professional Internship</div>
+        <div class="tl-company">Automoción S.A. de C.V.</div>
+        <ul class="tl-bullets">
+          <li>Built a full-stack warehouse materials management system (Java + MySQL) in 3 validated phases.</li>
+          <li>Post-delivery maintenance and end-user training.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BLOG & CREATIVE -->
+<div class="divider"></div>
+<section id="creative">
+  <p class="sec-label">✦ beyond the code</p>
+  <h2 class="sec-title">blog & <span>creative</span> space</h2>
+  <div style="display:flex;flex-direction:column;align-items:center;gap:28px;text-align:center">
+    <p style="color:var(--muted);font-size:.95rem;line-height:1.8;max-width:48ch">
+      Un rincón para palabras que escapan del código · poemas de madrugada · reflexiones cyberpunk · todo lo que no cabe en un commit message 🌸
+    </p>
+    <a href="/blog/" target="_blank" class="kbtn kbtn-blog">
+      🥀 el jardín de Luna Sh
+    </a>
+  </div>
+</section>
+
+<!-- SOCIAL -->
+<div class="divider"></div>
+<section id="social">
+  <p class="sec-label">✦ find me online</p>
+  <h2 class="sec-title">let's <span>connect</span></h2>
+  <p style="color:var(--muted);margin-bottom:32px;font-size:.93rem;max-width:50ch">Whether you want to talk code, collaborate, or just watch me fail at video games on Twitch — I'm around 🐱</p>
+  <div class="social-row">
+    <a href="https://twitter.com/" target="_blank" class="social-pill twitter">𝕏 Twitter / X</a>
+    <a href="https://twitch.tv/" target="_blank" class="social-pill twitch">🎮 Twitch</a>
+    <a href="https://github.com/DianaOgaz" target="_blank" class="social-pill github">⌥ GitHub</a>
+    <a href="https://linkedin.com/in/diana-teresa-ogaz-escarpita" target="_blank" class="social-pill linkedin">in LinkedIn</a>
+  </div>
+</section>
+
+<footer>built with <span>♡</span> and way too much coffee · diana ogaz · 2025</footer>
+
+<script>
+// ── CURSOR ──────────────────────────────────────────────────
+const cursor = document.getElementById('cursor');
+const cats = ['🐱','🐈','😺','😸','🐾','😻'];
+let catIdx = 0;
+document.addEventListener('mousemove', e => {
+  cursor.style.left = e.clientX + 'px';
+  cursor.style.top  = e.clientY + 'px';
+});
+document.addEventListener('mousedown', () => cursor.classList.add('clicking'));
+document.addEventListener('mouseup',   () => cursor.classList.remove('clicking'));
+document.addEventListener('click', e => {
+  catIdx = (catIdx + 1) % cats.length;
+  cursor.textContent = cats[catIdx];
+  const emojis = ['🌸','✨','💜','🐾','⭐','💫','🌷','💗'];
+  const el = document.createElement('div');
+  el.className = 'float-emoji';
+  el.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+  el.style.left = e.clientX + 'px';
+  el.style.top  = e.clientY + 'px';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 2100);
+});
+
+// ── STARS ───────────────────────────────────────────────────
+const starsCanvas = document.getElementById('stars-canvas');
+const sCtx = starsCanvas.getContext('2d');
+let stars = [];
+function resizeStars(){
+  starsCanvas.width = window.innerWidth;
+  starsCanvas.height = window.innerHeight;
+  stars = [];
+  const n = Math.floor(starsCanvas.width * starsCanvas.height / 3800);
+  for(let i=0;i<n;i++) stars.push({
+    x:Math.random()*starsCanvas.width,
+    y:Math.random()*starsCanvas.height*.68,
+    r:Math.random()*1.3+.2,
+    a:Math.random(),
+    da:(Math.random()*.007+.002)*(Math.random()<.5?1:-1)
+  });
+}
+function drawStars(){
+  sCtx.clearRect(0,0,starsCanvas.width,starsCanvas.height);
+  stars.forEach(s=>{
+    s.a += s.da;
+    if(s.a>1||s.a<.05) s.da*=-1;
+    sCtx.beginPath();
+    sCtx.arc(s.x,s.y,s.r,0,Math.PI*2);
+    sCtx.fillStyle=`rgba(255,248,231,${s.a})`;
+    sCtx.fill();
+  });
+  requestAnimationFrame(drawStars);
+}
+window.addEventListener('resize', resizeStars);
+resizeStars(); drawStars();
+
+// ── CHERRY BLOSSOM PETALS ───────────────────────────────────
+const petalCanvas = document.getElementById('petal-canvas');
+const pCtx = petalCanvas.getContext('2d');
+let petals = [];
+
+function resizePetals(){
+  petalCanvas.width  = window.innerWidth;
+  petalCanvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resizePetals);
+resizePetals();
+
+// Petal shapes: draw a 5-petal flower shape
+function drawPetalShape(ctx, x, y, size, angle, alpha){
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.translate(x, y);
+  ctx.rotate(angle);
+
+  // Choose random petal color from palette
+  const colors = [
+    'rgba(255,182,215,1)',  // soft pink
+    'rgba(255,150,200,1)',  // mid pink
+    'rgba(255,200,230,1)',  // pale pink
+    'rgba(220,130,255,1)',  // lavender
+    'rgba(255,170,210,1)',  // peach-pink
+  ];
+  const col = colors[Math.floor(Math.random()*colors.length) % colors.length];
+  
+  // Simple oval petal
+  ctx.beginPath();
+  ctx.ellipse(0, -size*.6, size*.35, size*.65, 0, 0, Math.PI*2);
+  ctx.fillStyle = col;
+  ctx.fill();
+
+  // Tiny center highlight
+  ctx.beginPath();
+  ctx.ellipse(0, -size*.75, size*.1, size*.15, 0, 0, Math.PI*2);
+  ctx.fillStyle = 'rgba(255,240,250,0.6)';
+  ctx.fill();
+
+  ctx.restore();
+}
+
+function spawnPetal(){
+  return {
+    x: Math.random() * petalCanvas.width,
+    y: -20,
+    size: Math.random()*8 + 5,
+    speedY: Math.random()*1.2 + 0.5,
+    speedX: (Math.random()-0.5)*0.8,
+    angle: Math.random()*Math.PI*2,
+    angleSpeed: (Math.random()-0.5)*0.04,
+    swing: Math.random()*2,
+    swingSpeed: Math.random()*0.025 + 0.01,
+    swingOffset: Math.random()*Math.PI*2,
+    alpha: Math.random()*0.5+0.4,
+    colorIdx: Math.floor(Math.random()*5),
+    age: 0,
+  };
+}
+
+// Pre-spawn some petals at random heights
+for(let i=0;i<38;i++){
+  const p = spawnPetal();
+  p.y = Math.random()*petalCanvas.height;
+  p.age = Math.random()*500;
+  petals.push(p);
+}
+
+const petalColors = [
+  'rgba(255,182,215,1)',
+  'rgba(255,150,200,1)',
+  'rgba(255,200,230,1)',
+  'rgba(220,130,255,1)',
+  'rgba(255,170,210,1)',
+];
+
+function drawPetals(){
+  pCtx.clearRect(0,0,petalCanvas.width,petalCanvas.height);
+
+  // spawn new petals occasionally
+  if(Math.random()<0.18) petals.push(spawnPetal());
+  // cap at 60
+  if(petals.length>60) petals.splice(0,1);
+
+  petals.forEach(p=>{
+    p.age++;
+    p.x += p.speedX + Math.sin(p.age*p.swingSpeed + p.swingOffset)*p.swing*0.06;
+    p.y += p.speedY;
+    p.angle += p.angleSpeed;
+
+    // fade out near bottom
+    let alpha = p.alpha;
+    if(p.y > petalCanvas.height - 80) alpha *= (petalCanvas.height - p.y)/80;
+
+    pCtx.save();
+    pCtx.globalAlpha = Math.max(0, alpha);
+    pCtx.translate(p.x, p.y);
+    pCtx.rotate(p.angle);
+
+    pCtx.beginPath();
+    pCtx.ellipse(0, -p.size*.55, p.size*.32, p.size*.6, 0, 0, Math.PI*2);
+    pCtx.fillStyle = petalColors[p.colorIdx];
+    pCtx.fill();
+
+    // Inner highlight
+    pCtx.beginPath();
+    pCtx.ellipse(0, -p.size*.7, p.size*.1, p.size*.14, 0, 0, Math.PI*2);
+    pCtx.fillStyle = 'rgba(255,240,252,0.55)';
+    pCtx.fill();
+
+    pCtx.restore();
+
+    // Reset petal if off screen
+    if(p.y > petalCanvas.height + 20 || p.x < -40 || p.x > petalCanvas.width + 40){
+      p.x = Math.random()*petalCanvas.width;
+      p.y = -20;
+      p.age = 0;
+    }
+  });
+
+  requestAnimationFrame(drawPetals);
+}
+drawPetals();
+
+// ── CITY LIGHTS ─────────────────────────────────────────────
+(function(){
+  const cl = document.getElementById('city-lights');
+  if(!cl) return;
+  const ctx = cl.getContext('2d');
+  // define windows as {x,y,w,h,color,on,blinkRate,phase}
+  const lights = [];
+  const cols = ['#ff6ec7','#c77dff','#00f5d4','#ffb347','#fff8d0','#9b5de5','#ff9d4d'];
+  // Seed deterministic windows scattered across city silhouette
+  // We skip the clip-path silhouette calculation and just scatter
+  // tiny rectangles in the lower half, they'll be hidden by city div anyway
+  // only visible ones are above the bg0 fill = in the building shapes
+  // We position them by "column bands" matching the city skyline heights
+  const bands = [
+    {x:.02,maxY:.55,w:.02},{x:.09,maxY:.25,w:.03},{x:.16,maxY:.2,w:.02},
+    {x:.18,maxY:.1,w:.02},{x:.25,maxY:.18,w:.02},{x:.31,maxY:.14,w:.04},
+    {x:.4,maxY:.18,w:.05},{x:.51,maxY:.08,w:.04},{x:.6,maxY:.22,w:.05},
+    {x:.67,maxY:.2,w:.04},{x:.76,maxY:.25,w:.03},{x:.84,maxY:.18,w:.03},
+    {x:.9,maxY:.3,w:.03},{x:.96,maxY:.45,w:.02},
+  ];
+  bands.forEach(b=>{
+    const rows = Math.floor((1-b.maxY)/0.07);
+    for(let r=0;r<rows;r++){
+      const cols2 = Math.floor(b.w/0.012);
+      for(let c=0;c<cols2;c++){
+        if(Math.random()<.55){
+          lights.push({
+            xFrac: b.x + c*0.013 + Math.random()*.005,
+            yFrac: b.maxY + r*0.07 + Math.random()*.04,
+            w: Math.random()*3+2, h: Math.random()*4+3,
+            color: cols[Math.floor(Math.random()*cols.length)],
+            on: Math.random()>.35,
+            blinkRate: Math.random()*.004+.001,
+            phase: Math.random()*Math.PI*2,
+          });
+        }
+      }
+    }
+  });
+
+  let frame=0;
+  function drawLights(){
+    cl.width = cl.offsetWidth;
+    cl.height = cl.offsetHeight;
+    ctx.clearRect(0,0,cl.width,cl.height);
+    frame++;
+    lights.forEach(l=>{
+      // subtle blink
+      const flicker = Math.sin(frame*l.blinkRate + l.phase);
+      if(flicker > .92 && Math.random()<.05) l.on = !l.on;
+      if(!l.on){ return; }
+      const x = l.xFrac * cl.width;
+      const y = l.yFrac * cl.height;
+      const alpha = .55 + .35*((flicker+1)/2);
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      // glow
+      const grd = ctx.createRadialGradient(x+l.w/2,y+l.h/2,0,x+l.w/2,y+l.h/2,l.w*2.5);
+      grd.addColorStop(0, l.color);
+      grd.addColorStop(1, 'transparent');
+      ctx.fillStyle = grd;
+      ctx.fillRect(x-l.w,y-l.h,l.w*3,l.h*3);
+      // core
+      ctx.globalAlpha = alpha*.9;
+      ctx.fillStyle = l.color;
+      ctx.fillRect(x,y,l.w,l.h);
+      ctx.restore();
+    });
+  }
+  function loop(){ drawLights(); requestAnimationFrame(loop); }
+  loop();
+})();
+
+// ── SMOOTH NAV ──────────────────────────────────────────────
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click', e=>{
+    const t = document.querySelector(a.getAttribute('href'));
+    if(t){ e.preventDefault(); t.scrollIntoView({behavior:'smooth'}); }
+  });
+});
+</script>
+</body>
+</html>
