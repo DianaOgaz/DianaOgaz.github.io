@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<title>Luna Sh · el jardín de medianoche</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#080008;--bg2:#0f000f;
+  --white:#f5f0ff;--white2:#ede4ff;
+  --lila:#d4b8ff;--lila2:#b894ff;--lila3:#9b6fff;
+  --deep:#3d0060;--muted:#9980b8;
+  --border:rgba(180,140,255,.18);--border2:rgba(180,140,255,.08);
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--white);font-family:'Nunito',sans-serif;overflow-x:hidden;min-height:100vh;
+  background-image:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(100,0,160,.25) 0%,transparent 70%),
+    radial-gradient(ellipse 40% 30% at 80% 80%,rgba(60,0,100,.15) 0%,transparent 60%)}
+
+#cursor{position:fixed;pointer-events:none;z-index:9999;font-size:22px;line-height:1;user-select:none;transform:translate(3px,3px);filter:drop-shadow(0 0 6px var(--lila));opacity:0;transition:opacity .2s}
+#rose-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1}
+
+nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:16px 48px;background:rgba(8,0,8,.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:600;letter-spacing:.2em;color:var(--white2);text-transform:uppercase}
+.nav-logo em{color:var(--lila);font-style:italic;font-weight:300}
+.nav-ornament{color:var(--lila);opacity:.4;letter-spacing:.3em;font-size:.9rem}
+.nav-right{display:flex;align-items:center;gap:16px}
+.nav-back{font-size:.78rem;font-weight:600;color:var(--muted);text-decoration:none;letter-spacing:.1em;text-transform:uppercase;transition:color .2s}
+.nav-back:hover{color:var(--lila)}
+
+/* auth */
+.auth-btn{font-family:'Cormorant Garamond',serif;font-size:.85rem;letter-spacing:.14em;text-transform:uppercase;padding:8px 20px;border:1px solid var(--border);background:transparent;color:var(--lila);cursor:pointer;transition:all .2s}
+.auth-btn:hover{background:rgba(180,140,255,.08);border-color:var(--lila2)}
+.auth-user{font-size:.75rem;color:var(--muted);letter-spacing:.06em;font-style:italic;display:flex;align-items:center;gap:10px}
+
+.admin-btn{font-family:'Cormorant Garamond',serif;font-size:.82rem;letter-spacing:.14em;text-transform:uppercase;padding:8px 20px;border:1px solid var(--border);background:transparent;color:var(--lila);cursor:pointer;transition:all .2s}
+.admin-btn:hover{background:rgba(180,140,255,.08)}
+
+.hero{position:relative;z-index:2;text-align:center;padding:100px 20px 80px}
+.hero-ornament{font-family:'Cormorant Garamond',serif;font-size:1.1rem;letter-spacing:.5em;color:var(--lila);opacity:.7;margin-bottom:24px;display:block}
+.hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(3rem,7vw,6rem);font-weight:300;line-height:1;color:var(--white);letter-spacing:.06em;margin-bottom:10px;text-shadow:0 0 60px rgba(180,140,255,.3)}
+.hero h1 em{font-style:italic;color:var(--lila2);font-weight:300}
+.hero-sub{font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-style:italic;font-weight:300;color:var(--muted);letter-spacing:.08em;margin-bottom:30px}
+.hero-divider{display:flex;align-items:center;justify-content:center;gap:16px;margin:0 auto;max-width:320px}
+.hero-divider-line{flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--lila),transparent);opacity:.4}
+
+.layout{max-width:800px;margin:0 auto;padding:48px 28px 100px;position:relative;z-index:2}
+
+.filter-bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;margin-bottom:48px;border:1px solid var(--border);overflow:hidden}
+.filter-chip{font-family:'Cormorant Garamond',serif;font-size:.72rem;font-weight:400;letter-spacing:.12em;padding:10px 22px;border:none;border-right:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all .2s;text-transform:uppercase}
+.filter-chip:last-child{border-right:none}
+.filter-chip:hover{background:rgba(180,140,255,.06);color:var(--lila)}
+.filter-chip.active{background:rgba(180,140,255,.1);color:var(--white2)}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px}
+.modal{background:linear-gradient(160deg,#0e000e,#180018);border:1px solid var(--border);padding:48px;width:100%;max-width:580px;max-height:90vh;overflow-y:auto;position:relative}
+.modal-corner{position:absolute;font-size:1.4rem;color:var(--lila);opacity:.4}
+.modal-corner.tl{top:12px;left:14px}.modal-corner.tr{top:12px;right:14px}
+.modal-corner.bl{bottom:12px;left:14px}.modal-corner.br{bottom:12px;right:14px}
+.modal-close{position:absolute;top:14px;right:18px;font-size:1rem;color:var(--muted);cursor:pointer;background:none;border:none;transition:color .2s;letter-spacing:.1em;font-family:'Cormorant Garamond',serif}
+.modal-close:hover{color:var(--lila)}
+.modal h2{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:300;letter-spacing:.15em;color:var(--white2);text-align:center;margin-bottom:6px;text-transform:uppercase}
+.modal-sub{text-align:center;font-style:italic;color:var(--muted);font-size:.83rem;margin-bottom:26px;font-family:'Cormorant Garamond',serif}
+label{display:block;font-size:.68rem;font-weight:700;letter-spacing:.14em;color:var(--muted);margin-bottom:6px;margin-top:16px;text-transform:uppercase}
+input[type=text],textarea,select{width:100%;padding:11px 14px;background:rgba(255,255,255,.03);border:none;border-bottom:1px solid var(--border);color:var(--white2);font-family:'Nunito',sans-serif;font-size:.9rem;outline:none;transition:border-color .2s;resize:vertical}
+input[type=text]:focus,textarea:focus,select:focus{border-color:var(--lila)}
+textarea{min-height:160px;border:1px solid var(--border2);padding:14px}
+select option{background:#0e000e}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:500px){.form-row{grid-template-columns:1fr}}
+.submit-btn{width:100%;margin-top:26px;padding:14px;border:1px solid var(--lila);background:transparent;color:var(--lila2);font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:400;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;transition:all .25s}
+.submit-btn:hover{background:rgba(180,140,255,.1);color:var(--white)}
+.submit-btn:disabled{opacity:.4;cursor:default}
+
+/* POSTS */
+.posts-grid{display:flex;flex-direction:column;gap:0}
+.post-card{border-bottom:1px solid var(--border2);padding:44px 0;position:relative}
+.post-card::after{content:'';position:absolute;left:0;bottom:-1px;width:0;height:1px;background:linear-gradient(90deg,var(--lila),transparent);transition:width .5s}
+.post-card:hover::after{width:100%}
+.post-meta{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+.post-category{font-size:.62rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;padding:3px 0;border-bottom:1px solid}
+.cat-poema{color:var(--lila2);border-color:var(--lila2)}
+.cat-escrito{color:var(--white2);border-color:rgba(245,240,255,.3)}
+.cat-reflexion{color:var(--muted);border-color:var(--muted)}
+.cat-otro{color:var(--lila);border-color:var(--lila)}
+.post-date{font-family:'Cormorant Garamond',serif;font-size:.88rem;font-style:italic;color:var(--muted)}
+.post-title{font-family:'Cormorant Garamond',serif;font-size:clamp(1.5rem,3vw,2.1rem);font-weight:300;color:var(--white);line-height:1.2;letter-spacing:.02em;margin-bottom:14px;transition:color .2s}
+.post-card:hover .post-title{color:var(--lila2)}
+.post-preview{font-size:.93rem;line-height:2;color:var(--muted);white-space:pre-wrap;word-break:break-word;font-weight:300}
+.post-preview.collapsed{display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden}
+.read-more{font-family:'Cormorant Garamond',serif;font-size:.88rem;font-style:italic;color:var(--lila);cursor:pointer;background:none;border:none;padding:8px 0 0;letter-spacing:.06em;display:block;transition:color .2s}
+.read-more:hover{color:var(--white)}
+.post-footer{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-top:20px}
+.post-tags{display:flex;gap:10px;flex-wrap:wrap}
+.post-tag{font-size:.68rem;letter-spacing:.1em;color:var(--muted);font-style:italic}
+.post-tag::before{content:'#';color:var(--lila);opacity:.6}
+.like-btn{display:flex;align-items:center;gap:8px;font-family:'Cormorant Garamond',serif;font-size:.92rem;font-style:italic;color:var(--muted);background:none;border:none;cursor:pointer;transition:color .2s;letter-spacing:.06em}
+.like-btn:hover,.like-btn.liked{color:var(--lila2)}
+.like-btn .heart{font-size:1rem;display:inline-block;transition:transform .2s}
+.like-btn:hover .heart,.like-btn.liked .heart{transform:scale(1.3)}
+.delete-btn{font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);background:none;border:none;border-bottom:1px solid transparent;cursor:pointer;transition:all .18s;font-family:'Nunito',sans-serif}
+.delete-btn:hover{color:#ff6b6b;border-color:#ff6b6b}
+
+.empty-state{text-align:center;padding:80px 20px}
+.empty-icon{font-size:3rem;color:var(--lila);opacity:.3;margin-bottom:20px}
+.empty-state p{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-style:italic;font-weight:300;color:var(--muted);line-height:1.9}
+
+.status-bar{text-align:center;font-style:italic;font-size:.78rem;color:var(--muted);padding:10px;letter-spacing:.06em;min-height:32px}
+
+.toast{position:fixed;bottom:28px;right:28px;z-index:9000;background:linear-gradient(135deg,#1a0020,#2d0040);border:1px solid var(--border);color:var(--lila2);padding:12px 24px;font-family:'Cormorant Garamond',serif;font-size:.95rem;font-style:italic;letter-spacing:.06em;box-shadow:0 4px 24px rgba(0,0,0,.5);transform:translateY(80px);opacity:0;transition:all .3s;pointer-events:none}
+.toast.show{transform:translateY(0);opacity:1}
+
+.float-petal{position:fixed;pointer-events:none;z-index:9990;font-size:1rem;opacity:0;animation:fp 2s ease-out forwards}
+@keyframes fp{0%{opacity:.8;transform:translateY(0) rotate(0)}100%{opacity:0;transform:translateY(-70px) rotate(30deg)}}
+
+footer{position:relative;z-index:2;text-align:center;padding:40px 20px 50px;font-family:'Cormorant Garamond',serif;font-size:.85rem;font-style:italic;color:var(--muted);letter-spacing:.08em;border-top:1px solid var(--border2)}
+footer span{color:var(--lila);opacity:.8}
+
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--deep);border-radius:2px}
+</style>
+</head>
+<body>
+
+<div id="cursor">🥀</div>
+<canvas id="rose-canvas"></canvas>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="adminModal" style="display:none">
+  <div class="modal">
+    <span class="modal-corner tl">✦</span><span class="modal-corner tr">✦</span>
+    <span class="modal-corner bl">✦</span><span class="modal-corner br">✦</span>
+    <button class="modal-close" id="closeModal">✕ cerrar</button>
+    <h2>nuevo escrito</h2>
+    <p class="modal-sub">— cada palabra es un pétalo —</p>
+    <label>título</label>
+    <input type="text" id="postTitle" placeholder="el nombre de tu escrito..."/>
+    <div class="form-row">
+      <div>
+        <label>categoría</label>
+        <select id="postCategory">
+          <option value="poema">Poema</option>
+          <option value="escrito">Escrito</option>
+          <option value="reflexion">Reflexión</option>
+          <option value="otro">Otro</option>
+        </select>
+      </div>
+      <div>
+        <label>tags (coma separados)</label>
+        <input type="text" id="postTags" placeholder="amor, luna, silencio..."/>
+      </div>
+    </div>
+    <label>contenido</label>
+    <textarea id="postContent" placeholder="escribe aquí..."></textarea>
+    <button class="submit-btn" id="submitPost">— publicar —</button>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">el jardín de <em>medianoche</em></div>
+  <span class="nav-ornament">✦ ✦ ✦</span>
+  <div class="nav-right">
+    <a href="/" class="nav-back">← portfolio</a>
+    <div id="authArea"></div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <span class="hero-ornament">✦ · ✦ · ✦</span>
+  <h1>Luna<br><em>Sh</em></h1>
+  <p class="hero-sub">escritos, poemas & pensamientos de madrugada</p>
+  <div class="hero-divider">
+    <div class="hero-divider-line"></div>
+    <span style="color:var(--lila);font-size:1rem">🥀</span>
+    <div class="hero-divider-line"></div>
+  </div>
+</div>
+
+<div class="layout">
+  <div class="filter-bar">
+    <button class="filter-chip active" data-filter="all">todo</button>
+    <button class="filter-chip" data-filter="poema">poemas</button>
+    <button class="filter-chip" data-filter="escrito">escritos</button>
+    <button class="filter-chip" data-filter="reflexion">reflexiones</button>
+    <button class="filter-chip" data-filter="otro">otro</button>
+  </div>
+  <div id="statusBar" class="status-bar">conectando...</div>
+  <div class="posts-grid" id="postsGrid"></div>
+</div>
+
+<footer>luna sh · <span>✦</span> · el jardín de medianoche</footer>
+<div class="toast" id="toast"></div>
+
+<!-- FIREBASE SDK (compat, no bundler needed) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.12.2/firebase-app-compat.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.12.2/firebase-firestore-compat.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.12.2/firebase-auth-compat.min.js"></script>
+
+<script>
+// ── FIREBASE CONFIG ──────────────────────────────────────
+firebase.initializeApp({
+  apiKey: "AIzaSyDKdV24FNtu4EcTa5C2QnA_zA-QoinxdJU",
+  authDomain: "jardindemedianoche.firebaseapp.com",
+  projectId: "jardindemedianoche",
+  storageBucket: "jardindemedianoche.firebasestorage.app",
+  messagingSenderId: "555004480357",
+  appId: "1:555004480357:web:d11ae8839c75cc2f6e2f8c"
+});
+const db   = firebase.firestore();
+const auth = firebase.auth();
+
+// Tu email de Google — solo este puede publicar/borrar
+const OWNER_EMAIL = "ogazdiana7@gmail.com";
+
+// ── CURSOR ──────────────────────────────────────────────
+const cursor = document.getElementById('cursor');
+const curEmojis = ['🥀','🌑','✦','🖤','🌙','🕯'];
+let ci = 0;
+document.addEventListener('mousemove', e => {
+  cursor.style.opacity='1';
+  cursor.style.left=e.clientX+'px';
+  cursor.style.top=e.clientY+'px';
+});
+document.addEventListener('mouseleave', () => cursor.style.opacity='0');
+document.addEventListener('click', e => {
+  ci=(ci+1)%curEmojis.length;
+  cursor.textContent=curEmojis[ci];
+  const el=document.createElement('div');
+  el.className='float-petal';
+  el.textContent=['🥀','✦','·','🌙'][Math.floor(Math.random()*4)];
+  el.style.cssText=`left:${e.clientX}px;top:${e.clientY}px`;
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),2100);
+});
+
+// ── PETALS ──────────────────────────────────────────────
+const canvas=document.getElementById('rose-canvas');
+const ctx=canvas.getContext('2d');
+let petals=[];
+const COLS=['rgba(180,100,180,1)','rgba(210,160,255,1)','rgba(240,220,255,1)','rgba(130,60,160,1)','rgba(200,180,230,1)'];
+function mkP(){return{x:Math.random()*innerWidth,y:-30,size:Math.random()*9+4,vy:Math.random()*.9+.3,vx:(Math.random()-.5)*.5,angle:Math.random()*Math.PI*2,av:(Math.random()-.5)*.025,sw:Math.random()*1.5,sws:Math.random()*.018+.008,swo:Math.random()*Math.PI*2,a:Math.random()*.4+.25,ci:Math.floor(Math.random()*5),t:0}}
+function rsz(){canvas.width=innerWidth;canvas.height=innerHeight}
+window.addEventListener('resize',rsz);rsz();
+for(let i=0;i<28;i++){const p=mkP();p.y=Math.random()*innerHeight;petals.push(p);}
+(function loop(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  if(Math.random()<.1&&petals.length<45)petals.push(mkP());
+  petals.forEach((p,i)=>{
+    p.t++;p.x+=p.vx+Math.sin(p.t*p.sws+p.swo)*p.sw*.04;p.y+=p.vy;p.angle+=p.av;
+    let a=p.a;if(p.y>canvas.height-100)a*=(canvas.height-p.y)/100;
+    ctx.save();ctx.globalAlpha=Math.max(0,a);ctx.translate(p.x,p.y);ctx.rotate(p.angle);
+    ctx.beginPath();ctx.ellipse(0,-p.size*.6,p.size*.28,p.size*.7,0,0,Math.PI*2);
+    ctx.fillStyle=COLS[p.ci];ctx.fill();
+    ctx.beginPath();ctx.moveTo(0,-p.size*.1);ctx.lineTo(0,-p.size*1.1);
+    ctx.strokeStyle='rgba(255,255,255,.1)';ctx.lineWidth=.5;ctx.stroke();
+    ctx.restore();
+    if(p.y>canvas.height+30||p.x<-50||p.x>canvas.width+50)petals[i]=mkP();
+  });
+  requestAnimationFrame(loop);
+})();
+
+// ── TOAST ──────────────────────────────────────────────
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000)}
+function status(msg){document.getElementById('statusBar').textContent=msg}
+
+// ── HELPERS ────────────────────────────────────────────
+function catClass(c){return({poema:'cat-poema',escrito:'cat-escrito',reflexion:'cat-reflexion',otro:'cat-otro'})[c]||'cat-otro'}
+function catLabel(c){return({poema:'Poema',escrito:'Escrito',reflexion:'Reflexión',otro:'Otro'})[c]||c}
+function fmtDate(ts){
+  if(!ts) return '';
+  const d = ts.toDate ? ts.toDate() : new Date(ts);
+  return d.toLocaleDateString('es-MX',{day:'2-digit',month:'long',year:'numeric'})+' · '+d.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
+}
+
+// ── STATE ───────────────────────────────────────────────
+let currentFilter='all', isOwner=false;
+const LIKED_KEY='luna_sh_liked_v1';
+let liked=new Set();
+try{liked=new Set(JSON.parse(localStorage.getItem(LIKED_KEY)||'[]'))}catch(e){}
+function saveLiked(){try{localStorage.setItem(LIKED_KEY,JSON.stringify([...liked]))}catch(e){}}
+
+// ── RENDER ──────────────────────────────────────────────
+function render(posts){
+  const grid=document.getElementById('postsGrid');
+  const filtered=currentFilter==='all'?posts:posts.filter(p=>p.cat===currentFilter);
+  if(!filtered.length){
+    grid.innerHTML=`<div class="empty-state"><div class="empty-icon">🥀</div><p>${posts.length?'no hay escritos en esta categoría todavía.<br><em>el silencio también tiene su belleza.</em>':'aún no hay palabras aquí.<br><em>todo jardín comienza con una semilla.</em>'}</p></div>`;
+    return;
+  }
+  grid.innerHTML=filtered.map(p=>{
+    const isLiked=liked.has(p.id);
+    const tags=(p.tags||[]).map(t=>`<span class="post-tag">${t}</span>`).join('');
+    const long=(p.content||'').length>350;
+    return `<div class="post-card">
+      <div class="post-meta">
+        <span class="post-category ${catClass(p.cat)}">${catLabel(p.cat)}</span>
+        <span class="post-date">${fmtDate(p.ts)}</span>
+        ${isOwner?`<button class="delete-btn" onclick="delPost('${p.id}')">eliminar</button>`:''}
+      </div>
+      <div class="post-title">${p.title||'sin título'}</div>
+      <div class="post-preview${long?' collapsed':''}" id="pv-${p.id}">${p.content||''}</div>
+      ${long?`<button class="read-more" onclick="expandPost('${p.id}',this)">continuar leyendo →</button>`:''}
+      <div class="post-footer">
+        <div class="post-tags">${tags}</div>
+        <button class="like-btn${isLiked?' liked':''}" onclick="doLike('${p.id}',this,${p.likes||0})">
+          <span class="heart">${isLiked?'♥':'♡'}</span>
+          <span>${p.likes||0} ${p.likes===1?'corazón':'corazones'}</span>
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+window.expandPost=function(id,btn){
+  const el=document.getElementById('pv-'+id);
+  const c=el.classList.contains('collapsed');
+  el.classList.toggle('collapsed');
+  btn.textContent=c?'← cerrar':'continuar leyendo →';
+};
+
+window.doLike=async function(id,btn,cur){
+  const isLiked=liked.has(id);
+  const next=isLiked?Math.max(0,cur-1):cur+1;
+  if(isLiked)liked.delete(id);else liked.add(id);
+  saveLiked();
+  btn.classList.toggle('liked',!isLiked);
+  btn.querySelector('.heart').textContent=liked.has(id)?'♥':'♡';
+  btn.querySelectorAll('span')[1].textContent=`${next} ${next===1?'corazón':'corazones'}`;
+  try{await db.collection('posts').doc(id).update({likes:next})}catch(e){}
+};
+
+window.delPost=async function(id){
+  if(!isOwner)return;
+  if(!confirm('¿Eliminar este escrito?'))return;
+  try{await db.collection('posts').doc(id).delete();toast('eliminado.')}catch(e){toast('error al eliminar.')}
+};
+
+// ── FILTERS ─────────────────────────────────────────────
+document.querySelectorAll('.filter-chip').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.filter-chip').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');currentFilter=btn.dataset.filter;
+    if(window._posts)render(window._posts);
+  });
+});
+
+// ── MODAL ───────────────────────────────────────────────
+document.getElementById('closeModal').addEventListener('click',()=>document.getElementById('adminModal').style.display='none');
+document.getElementById('adminModal').addEventListener('click',e=>{if(e.target.id==='adminModal')document.getElementById('adminModal').style.display='none'});
+
+// ── SUBMIT ──────────────────────────────────────────────
+document.getElementById('submitPost').addEventListener('click',async()=>{
+  const title=document.getElementById('postTitle').value.trim();
+  const content=document.getElementById('postContent').value.trim();
+  const cat=document.getElementById('postCategory').value;
+  const tags=document.getElementById('postTags').value.split(',').map(t=>t.trim()).filter(Boolean);
+  if(!title||!content){toast('falta el título o el contenido.');return}
+  const btn=document.getElementById('submitPost');
+  btn.disabled=true;btn.textContent='— publicando —';
+  try{
+    await db.collection('posts').add({
+      title,content,cat,tags,likes:0,
+      ts:firebase.firestore.FieldValue.serverTimestamp()
+    });
+    toast('✦ publicado.');
+    document.getElementById('adminModal').style.display='none';
+    ['postTitle','postContent','postTags'].forEach(id=>document.getElementById(id).value='');
+  }catch(e){toast('error: '+e.message)}
+  btn.disabled=false;btn.textContent='— publicar —';
+});
+
+// ── AUTH ─────────────────────────────────────────────────
+function renderAuthArea(user){
+  const area=document.getElementById('authArea');
+  if(user){
+    isOwner = !OWNER_EMAIL || user.email===OWNER_EMAIL;
+    area.innerHTML=`
+      <div class="auth-user">
+        <span style="color:var(--lila);font-size:.8rem">✦</span>
+        <span>${isOwner?'luna sh':'visitante'}</span>
+        <button class="auth-btn" onclick="signOut()">salir</button>
+        ${isOwner?`<button class="admin-btn" onclick="document.getElementById('adminModal').style.display='flex'">+ escribir</button>`:''}
+      </div>`;
+  }else{
+    isOwner=false;
+    area.innerHTML=`<button class="auth-btn" onclick="signIn()">✦ entrar</button>`;
+  }
+}
+
+window.signIn=function(){
+  const provider=new firebase.auth.GoogleAuthProvider();
+  auth.signInWithPopup(provider).catch(e=>toast('error al entrar: '+e.message));
+};
+window.signOut=function(){
+  auth.signOut();
+};
+
+auth.onAuthStateChanged(user=>{
+  renderAuthArea(user);
+});
+
+// ── LOAD POSTS ───────────────────────────────────────────
+status('');
+db.collection('posts')
+  .orderBy('ts','desc')
+  .onSnapshot(snap=>{
+    const posts=snap.docs.map(d=>({id:d.id,...d.data()}));
+    window._posts=posts;
+    render(posts);
+    status('');
+  }, err=>{
+    status('error al cargar: '+err.message);
+  });
+</script>
+</body>
+</html>
