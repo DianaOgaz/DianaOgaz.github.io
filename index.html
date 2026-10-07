@@ -2,862 +2,1660 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
-<title>Diana Ogaz · Fullstack Dev</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Diana Ogaz - My Computer</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet"/>
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+/* ── XP BASE ── */
+*{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg0:#060010;
-  --bg1:#0d001f;
-  --bg2:#160030;
-  --pink:#ff6ec7;
-  --pink2:#ffb3e0;
-  --purple:#9b5de5;
-  --purple2:#c77dff;
-  --cyan:#00f5d4;
-  --orange:#ff9d4d;
-  --star:#fff8e7;
-  --text:#f0e0ff;
-  --muted:#b09fd0;
-  --card:rgba(30,0,60,0.7);
-  --border:rgba(155,93,229,0.3);
+  --xp-blue:#0a246a;
+  --xp-blue2:#3a6ea5;
+  --xp-blue3:#4a84c4;
+  --xp-green:#3a6b3a;
+  --xp-green2:#6aaf35;
+  --xp-teal:#008080;
+  --xp-gray:#d4d0c8;
+  --xp-gray2:#ece9d8;
+  --xp-gray3:#f0eedf;
+  --xp-dark:#000080;
+  --xp-white:#ffffff;
+  --xp-shadow:2px 2px 0 #fff inset,-2px -2px 0 #808080 inset;
+  --xp-shadow-in:-2px -2px 0 #fff inset,2px 2px 0 #808080 inset;
+  --xp-btn:linear-gradient(180deg,#f0eedf 0%,#d4d0c8 100%);
+  --xp-titlebar:linear-gradient(180deg,#0058df 0%,#0831d9 5%,#0a5dde 10%,#0757d8 25%,#0354c8 50%,#0251be 75%,#0354c8 100%);
+  --xp-start:linear-gradient(180deg,#6aaf35 0%,#3a6b3a 100%);
 }
-html{scroll-behavior:smooth}
+
 body{
-  background:var(--bg0);
-  color:var(--text);
-  font-family:'Nunito',sans-serif;
-  cursor:none;
+  background:#e8e8e8;
+  font-family:'Tahoma','Nunito',sans-serif;
+  font-size:11px;
+  color:#000;
+  min-height:100vh;
   overflow-x:hidden;
+  cursor:default;
+  user-select:none;
 }
 
-/* ── CURSOR ── */
-#cursor{
-  position:fixed;pointer-events:none;z-index:9999;
-  font-size:26px;
-  transform:translate(-50%,-50%);
-  transition:transform .07s ease;
-  filter:drop-shadow(0 0 8px var(--pink));
-  line-height:1;user-select:none;
+/* ── GLITCH WALLPAPER ── */
+#glitch-bg{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:#ececec;
+  overflow:hidden;
 }
-#cursor.clicking{transform:translate(-50%,-50%) scale(0.7) rotate(-15deg)}
-
-/* ── PETALS CANVAS ── */
-#petal-canvas{
-  position:fixed;top:0;left:0;width:100%;height:100%;
-  pointer-events:none;z-index:2;
-}
-
-/* ── STARS CANVAS ── */
-#stars-canvas{
-  position:fixed;top:0;left:0;width:100%;height:100%;
-  pointer-events:none;z-index:0;
-}
-
-/* ── NAV ── */
-nav{
-  position:fixed;top:0;left:0;right:0;z-index:100;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:14px 40px;
-  background:rgba(6,0,16,0.8);
-  backdrop-filter:blur(14px);
-  border-bottom:1px solid var(--border);
-}
-.nav-logo{
-  font-family:'Orbitron',monospace;font-size:.95rem;font-weight:900;
-  color:var(--pink);letter-spacing:.08em;
-  text-shadow:0 0 14px var(--pink);
-}
-.nav-logo span{color:var(--cyan)}
-.nav-links{display:flex;gap:26px;list-style:none}
-.nav-links a{
-  font-size:.82rem;font-weight:700;color:var(--muted);
-  text-decoration:none;letter-spacing:.04em;transition:color .2s;
-}
-.nav-links a:hover{color:var(--pink2);text-shadow:0 0 8px var(--pink)}
-
-/* ── HERO ── */
-#hero{
-  position:relative;min-height:100vh;
-  display:flex;align-items:center;justify-content:center;
-  overflow:hidden;z-index:1;
-}
-.sky{
+/* scanlines suaves */
+#glitch-bg .scanlines{
   position:absolute;inset:0;
-  background:linear-gradient(180deg,
-    #080018 0%,#160040 20%,#3a0068 38%,
-    #7a1fa0 52%,#c94f2a 66%,#ff8c42 78%,
-    #ffd580 90%,#fff4b0 100%);
-  z-index:0;
+  background:repeating-linear-gradient(
+    0deg,
+    transparent,transparent 3px,
+    rgba(0,0,0,.04) 3px,rgba(0,0,0,.04) 4px
+  );
 }
-.moon{
-  position:absolute;top:11%;right:17%;
-  width:72px;height:72px;border-radius:50%;
-  background:radial-gradient(circle at 38% 38%,#fff8d0,#ffd97a 60%,#e8a030);
-  box-shadow:0 0 30px 10px rgba(255,200,80,.4),0 0 70px 25px rgba(255,160,40,.15);
-  z-index:1;
+/* glitch slices — estético, no epiléptico */
+.glitch-slice{
+  position:absolute;left:0;right:0;
+  background:#ececec;
+  animation:glitchSlice steps(1) infinite;
+  transform-origin:left center;
 }
-/* Small decorative stars in hero */
-.hero-sparkle{
-  position:absolute;font-size:1rem;z-index:1;
-  animation:sparkle 2s ease-in-out infinite alternate;
-}
-@keyframes sparkle{0%{opacity:.3;transform:scale(.8)}100%{opacity:1;transform:scale(1.2)}}
-
-.city{
-  position:absolute;bottom:0;left:0;right:0;height:210px;
-  background:var(--bg0);z-index:2;
-  clip-path:polygon(
-    0% 100%,0% 55%,2% 55%,2% 30%,4% 30%,4% 20%,6% 20%,6% 30%,
-    8% 30%,8% 40%,9% 40%,9% 25%,11% 25%,11% 15%,12% 15%,12% 25%,
-    13% 25%,13% 40%,15% 40%,15% 35%,16% 35%,16% 20%,17% 20%,
-    17% 10%,18% 10%,18% 5%,19% 5%,19% 10%,20% 10%,20% 20%,
-    21% 20%,21% 35%,22% 35%,22% 45%,24% 45%,24% 30%,25% 30%,
-    25% 18%,26% 18%,26% 30%,27% 30%,27% 45%,29% 45%,29% 38%,
-    31% 38%,31% 22%,32% 22%,32% 14%,33% 14%,33% 8%,34% 8%,
-    34% 14%,35% 14%,35% 22%,36% 22%,36% 38%,38% 38%,38% 50%,
-    40% 50%,40% 32%,42% 32%,42% 18%,43% 18%,43% 12%,44% 12%,
-    44% 18%,45% 18%,45% 32%,47% 32%,47% 42%,49% 42%,49% 28%,
-    51% 28%,51% 15%,52% 15%,52% 8%,53% 8%,53% 3%,54% 3%,
-    54% 8%,55% 8%,55% 15%,56% 15%,56% 28%,58% 28%,58% 42%,
-    60% 42%,60% 35%,62% 35%,62% 22%,63% 22%,63% 32%,65% 32%,
-    65% 48%,67% 48%,67% 36%,69% 36%,69% 20%,70% 20%,70% 12%,
-    71% 12%,71% 20%,72% 20%,72% 36%,74% 36%,74% 48%,76% 48%,
-    76% 38%,78% 38%,78% 25%,79% 25%,79% 38%,80% 38%,80% 50%,
-    82% 50%,82% 40%,84% 40%,84% 28%,85% 28%,85% 18%,86% 18%,
-    86% 28%,87% 28%,87% 40%,88% 40%,88% 52%,90% 52%,90% 42%,
-    92% 42%,92% 30%,93% 30%,93% 20%,94% 20%,94% 30%,95% 30%,
-    95% 42%,96% 42%,96% 55%,98% 55%,98% 100%,100% 100%);
-}
-.city-glow{
-  position:absolute;bottom:0;left:0;right:0;height:210px;
-  background:linear-gradient(180deg,rgba(155,93,229,.12) 0%,transparent 60%);
-  z-index:3;pointer-events:none;
-}
-.hero-content{
-  position:relative;z-index:4;text-align:center;padding:0 20px;margin-top:-70px;
-}
-.hero-tag{
-  display:inline-block;font-size:.72rem;font-weight:800;
-  letter-spacing:.14em;color:var(--pink2);
-  background:rgba(255,110,199,.12);
-  border:1.5px solid rgba(255,110,199,.4);
-  border-radius:30px;padding:5px 18px;margin-bottom:20px;
-  box-shadow:0 0 14px rgba(255,110,199,.2);
-}
-.hero-name{
-  font-family:'Orbitron',monospace;
-  font-size:clamp(2.4rem,6vw,4.4rem);font-weight:900;line-height:1.1;
-  background:linear-gradient(135deg,var(--pink) 0%,var(--purple2) 50%,var(--cyan) 100%);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  filter:drop-shadow(0 0 22px rgba(255,110,199,.45));
-  margin-bottom:14px;
-}
-.hero-role{
-  font-size:1.05rem;color:var(--muted);
-  margin-bottom:34px;letter-spacing:.03em;
-}
-.hero-role em{color:var(--pink2);font-style:normal;font-weight:800}
-.hero-btns{display:flex;gap:18px;justify-content:center;flex-wrap:wrap}
-
-/* ── KAWAII BUTTONS ── */
-.kbtn{
-  position:relative;display:inline-flex;align-items:center;gap:8px;
-  padding:13px 30px;border-radius:50px;
-  font-family:'Nunito',sans-serif;font-size:.9rem;font-weight:800;
-  letter-spacing:.04em;text-decoration:none;border:none;
-  cursor:none;transition:transform .18s,box-shadow .18s,filter .18s;
-}
-.kbtn::after{
-  content:'';position:absolute;inset:-2px;border-radius:52px;
-  background:inherit;filter:blur(10px);opacity:0;z-index:-1;
-  transition:opacity .2s;
-}
-.kbtn:hover::after{opacity:.6}
-.kbtn:hover{transform:translateY(-4px) scale(1.05)}
-.kbtn:active{transform:translateY(-1px) scale(.98)}
-
-.kbtn-primary{
-  background:linear-gradient(135deg,#c44dff,#ff6ec7);
-  color:#fff;
-  box-shadow:0 4px 22px rgba(196,77,255,.45),0 1px 4px rgba(0,0,0,.3);
-}
-.kbtn-primary:hover{box-shadow:0 8px 32px rgba(196,77,255,.65),0 2px 8px rgba(0,0,0,.3)}
-
-.kbtn-secondary{
-  background:rgba(0,245,212,.08);
-  color:var(--cyan);
-  border:1.5px solid rgba(0,245,212,.5);
-  box-shadow:0 0 16px rgba(0,245,212,.2);
-}
-.kbtn-secondary:hover{
-  background:rgba(0,245,212,.14);
-  box-shadow:0 0 28px rgba(0,245,212,.4);
+@keyframes glitchSlice{
+  0%,80%,100%{transform:translateX(0);opacity:1;filter:none}
+  82%{transform:translateX(-14px);filter:hue-rotate(90deg);opacity:.85}
+  84%{transform:translateX(10px);filter:none;opacity:1}
+  86%{transform:translateX(0);opacity:1}
 }
 
-.kbtn-blog{
-  background:linear-gradient(135deg,#2d0060,#7b2fff,#ff6ec7);
-  background-size:200% 200%;
-  animation:blogGrad 3s ease infinite;
-  color:#fff;font-size:1rem;padding:16px 44px;
-  box-shadow:0 4px 28px rgba(123,47,255,.5),0 1px 4px rgba(0,0,0,.3);
+/* RGB split suave */
+#glitch-rgb{
+  position:fixed;inset:0;z-index:2;pointer-events:none;
+  animation:rgbFlash 2.5s steps(1) infinite;
 }
-.kbtn-blog:hover{box-shadow:0 8px 40px rgba(255,110,199,.6),0 2px 8px rgba(0,0,0,.3)}
-@keyframes blogGrad{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
-
-/* Heart decoration on buttons */
-.kbtn-primary::before{
-  content:'♡';position:absolute;top:-10px;right:-8px;
-  font-size:.85rem;color:var(--pink2);
-  animation:heartpop 2s ease-in-out infinite;
-}
-@keyframes heartpop{
-  0%,100%{transform:scale(1) rotate(-10deg)}
-  50%{transform:scale(1.3) rotate(5deg)}
+@keyframes rgbFlash{
+  0%,88%,100%{opacity:0}
+  89%{opacity:1;background:linear-gradient(90deg,
+    rgba(255,0,80,.2) 0%,transparent 8%,
+    transparent 60%,rgba(0,100,255,.2) 60%,transparent 68%)}
+  91%{opacity:0}
 }
 
-/* ── SECTIONS ── */
-section{
-  position:relative;z-index:1;
-  padding:80px 40px;max-width:1020px;margin:0 auto;
+/* líneas de tear — pocas, elegantes */
+#glitch-tears{
+  position:fixed;inset:0;z-index:2;pointer-events:none;
+  animation:tearAnim 2s steps(1) infinite;
 }
-.sec-label{
-  font-family:'Orbitron',monospace;font-size:.68rem;font-weight:700;
-  letter-spacing:.2em;color:var(--pink);
-  text-shadow:0 0 8px var(--pink);margin-bottom:8px;
+@keyframes tearAnim{
+  0%,82%,100%{opacity:0}
+  83%{opacity:1;background:linear-gradient(180deg,
+    transparent 28%,rgba(0,180,255,.7) 28%,rgba(0,180,255,.7) 28.5%,transparent 28.5%,
+    transparent 71%,rgba(255,0,120,.6) 71%,rgba(255,0,120,.6) 71.4%,transparent 71.4%)}
+  86%{opacity:1;background:linear-gradient(180deg,
+    transparent 52%,rgba(120,0,255,.5) 52%,rgba(120,0,255,.5) 52.5%,transparent 52.5%)}
+  88%{opacity:0}
 }
-.sec-title{
-  font-family:'Orbitron',monospace;
-  font-size:clamp(1.4rem,3vw,2rem);font-weight:900;
-  color:var(--text);margin-bottom:42px;line-height:1.2;
-}
-.sec-title span{color:var(--cyan)}
 
-/* ── ABOUT ── */
-.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
-@media(max-width:640px){.about-grid{grid-template-columns:1fr}}
-.about-text p{font-size:.95rem;line-height:1.85;color:var(--muted);margin-bottom:14px}
-.about-text p strong{color:var(--text)}
-.about-stats{display:flex;flex-direction:column;gap:14px}
+/* noise muy suave */
+#glitch-noise{
+  position:fixed;inset:0;z-index:2;pointer-events:none;
+  opacity:0;animation:noisePop 1.8s steps(1) infinite;
+}
+@keyframes noisePop{
+  0%,88%,100%{opacity:0}
+  89%{opacity:.1;background-image:
+    repeating-linear-gradient(0deg,rgba(0,0,0,.07) 0px,transparent 1px,transparent 4px),
+    repeating-linear-gradient(90deg,rgba(0,0,0,.05) 0px,transparent 2px,transparent 6px)}
+  91%{opacity:0}
+}
 
-.stat-card{
-  background:var(--card);backdrop-filter:blur(8px);
-  border:1.5px solid var(--border);border-radius:20px;
-  padding:18px 22px;display:flex;align-items:center;gap:16px;
-  box-shadow:0 4px 24px rgba(155,93,229,.1);
-  transition:border-color .2s,box-shadow .2s,transform .2s;
-}
-.stat-card:hover{
-  border-color:rgba(255,110,199,.5);
-  box-shadow:0 6px 30px rgba(255,110,199,.2);
-  transform:translateX(4px);
-}
-.stat-icon{font-size:2rem}
-.stat-val{
-  font-family:'Orbitron',monospace;font-size:1.35rem;font-weight:700;
-  color:var(--pink);text-shadow:0 0 10px var(--pink);
-}
-.stat-desc{font-size:.78rem;color:var(--muted);margin-top:2px}
+/* sin flash invertido — era lo más agresivo */
+#glitch-invert{display:none}
 
-/* ── SKILLS ── */
-.skills-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:18px}
-.skill-cat{
-  background:var(--card);backdrop-filter:blur(8px);
-  border:1.5px solid var(--border);border-radius:22px;padding:24px;
-  transition:border-color .2s,transform .2s,box-shadow .2s;
+/* ── DESKTOP ICONS ── */
+#desktop{
+  position:relative;
+  min-height:calc(100vh - 30px);
+  padding:14px;
+  display:flex;flex-direction:column;gap:6px;
+  width:120px;
 }
-.skill-cat:hover{
-  border-color:rgba(199,125,255,.5);
-  transform:translateY(-5px);
-  box-shadow:0 10px 35px rgba(155,93,229,.2);
+.desktop-icon{
+  display:flex;flex-direction:column;align-items:center;
+  gap:3px;width:80px;padding:4px;
+  border-radius:2px;cursor:pointer;
+  transition:background .1s;
 }
-.skill-cat-title{
-  font-family:'Orbitron',monospace;font-size:.7rem;font-weight:700;
-  letter-spacing:.1em;color:var(--cyan);margin-bottom:14px;
+.desktop-icon:hover{background:rgba(255,255,255,.15)}
+.desktop-icon:focus,.desktop-icon.selected{
+  background:rgba(30,80,180,.5);
+  outline:1px dotted #fff;
+}
+.desktop-icon .ico{font-size:2.2rem;line-height:1;filter:drop-shadow(1px 1px 2px rgba(0,0,0,.5))}
+.desktop-icon span{
+  color:#fff;font-size:11px;text-align:center;line-height:1.3;
+  text-shadow:1px 1px 2px #000,0 0 4px #000;
+  word-break:break-word;
+}
+
+/* ── WINDOWS ── */
+.xp-window{
+  position:fixed;
+  background:var(--xp-gray2);
+  border:2px solid var(--xp-blue);
+  border-radius:8px 8px 4px 4px;
+  box-shadow:2px 2px 8px rgba(0,0,0,.5), inset 0 0 0 1px rgba(255,255,255,.3);
+  min-width:280px;
+  z-index:100;
+  display:none;
+}
+.xp-window.active{display:block}
+.xp-window.front{z-index:200}
+.xp-window.serio-hidden,.xp-alert.serio-hidden{display:none!important}
+
+.xp-titlebar{
+  background:var(--xp-titlebar);
+  border-radius:6px 6px 0 0;
+  padding:4px 6px;
+  display:flex;align-items:center;gap:6px;
+  cursor:move;
+  position:relative;
+  height:28px;
+}
+.xp-titlebar-icon{font-size:14px;line-height:1}
+.xp-titlebar-text{
+  color:#fff;font-size:11px;font-weight:700;
+  text-shadow:1px 1px 2px rgba(0,0,0,.5);
+  flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.xp-titlebar-btns{display:flex;gap:2px}
+.xp-btn-win{
+  width:21px;height:21px;
+  border-radius:3px;border:1px solid rgba(0,0,0,.4);
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;cursor:pointer;
+  background:linear-gradient(180deg,#d9d9d9 0%,#b0b0b0 100%);
+  box-shadow:inset 1px 1px 0 rgba(255,255,255,.8);
+  transition:filter .1s;
+  color:#000;
+}
+.xp-btn-win:hover{filter:brightness(1.15)}
+.xp-btn-close{background:linear-gradient(180deg,#e8504a 0%,#c0231d 100%)}
+.xp-btn-close:hover{background:linear-gradient(180deg,#ff6060 0%,#dd3030 100%)}
+
+.xp-menubar{
+  background:var(--xp-gray2);
+  border-bottom:1px solid #aca899;
+  padding:2px 4px;
+  display:flex;gap:2px;
+}
+.xp-menu-item{
+  padding:2px 6px;border-radius:2px;
+  font-size:11px;cursor:pointer;
+  transition:background .1s;
+}
+.xp-menu-item:hover{background:var(--xp-blue);color:#fff}
+
+.xp-content{padding:8px;overflow-y:auto}
+.xp-toolbar{
+  background:var(--xp-gray2);
+  border-bottom:1px solid #aca899;
+  padding:4px 6px;
+  display:flex;align-items:center;gap:4px;
+  flex-wrap:wrap;
+}
+.xp-toolbar-btn{
+  background:var(--xp-btn);
+  border:1px solid #aca899;
+  border-radius:2px;
+  padding:2px 8px;font-size:11px;
+  cursor:pointer;
+  box-shadow:var(--xp-shadow);
+  white-space:nowrap;
+}
+.xp-toolbar-btn:hover{background:linear-gradient(180deg,#fff8c0 0%,#ffe060 100%)}
+.xp-toolbar-btn:active{box-shadow:var(--xp-shadow-in)}
+
+/* ── ADDRESS BAR ── */
+.xp-addressbar{
+  display:flex;align-items:center;gap:4px;
+  background:var(--xp-gray2);
+  border-bottom:1px solid #aca899;
+  padding:3px 6px;
+}
+.xp-addressbar label{font-size:11px;color:#000}
+.xp-address-input{
+  flex:1;padding:1px 4px;
+  border:1px solid #7f9db9;
+  background:#fff;font-size:11px;
+  font-family:'Tahoma',sans-serif;
+  box-shadow:inset 1px 1px 2px rgba(0,0,0,.2);
+}
+
+/* ── TASKBAR ── */
+#taskbar{
+  position:fixed;bottom:0;left:0;right:0;
+  height:30px;
+  background:linear-gradient(180deg,#1f4fd8 0%,#1b45c8 4%,#2255e0 6%,#1a4bd5 10%,#1545c8 50%,#1040be 75%,#1545c8 100%);
+  display:flex;align-items:center;
+  z-index:9999;
+  box-shadow:0 -1px 0 rgba(255,255,255,.3);
+}
+#start-btn{
+  display:flex;align-items:center;gap:4px;
+  background:var(--xp-start);
+  border:1px solid #2a5a1a;
+  border-radius:0 12px 12px 0;
+  padding:0 16px 0 8px;
+  height:100%;
+  font-weight:700;font-size:13px;color:#fff;
+  cursor:pointer;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.4),2px 0 4px rgba(0,0,0,.3);
+  letter-spacing:.02em;
+  min-width:100px;
+}
+#start-btn:hover{filter:brightness(1.1)}
+#start-btn .start-ico{font-size:1.1rem}
+
+#taskbar-windows{display:flex;gap:3px;padding:0 6px;flex:1;overflow:hidden}
+.taskbar-item{
+  background:linear-gradient(180deg,#2a5fc0 0%,#1a4aaa 100%);
+  border:1px solid rgba(255,255,255,.2);
+  border-radius:2px;
+  padding:0 8px;height:22px;
+  color:#fff;font-size:11px;cursor:pointer;
+  display:flex;align-items:center;gap:4px;
+  max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.2);
+}
+.taskbar-item:hover{filter:brightness(1.2)}
+.taskbar-item.active-task{background:linear-gradient(180deg,#1a3a9a 0%,#2a5fc0 100%);box-shadow:inset 1px 1px 2px rgba(0,0,0,.3)}
+
+#systray{
+  display:flex;align-items:center;gap:6px;
+  padding:0 8px;
+  background:rgba(0,0,50,.3);
+  height:100%;
+  border-left:1px solid rgba(255,255,255,.15);
+  color:#fff;font-size:11px;
+  white-space:nowrap;
+}
+#clock{font-size:11px;color:#fff}
+
+/* ── START MENU ── */
+#start-menu{
+  position:fixed;bottom:30px;left:0;
+  width:340px;
+  background:#fff;
+  border:2px solid var(--xp-blue);
+  border-radius:8px 8px 0 0;
+  box-shadow:4px 0 8px rgba(0,0,0,.4);
+  z-index:99999;
+  display:none;
+}
+#start-menu.open{display:block}
+.sm-header{
+  background:linear-gradient(90deg,#1b5de8,#3a8af0);
+  padding:10px 14px;border-radius:6px 6px 0 0;
+  display:flex;align-items:center;gap:10px;
+}
+.sm-avatar{font-size:2.5rem;background:#fff;border-radius:50%;width:52px;height:52px;display:flex;align-items:center;justify-content:center}
+.sm-username{color:#fff;font-size:13px;font-weight:700;text-shadow:1px 1px 2px rgba(0,0,0,.4)}
+.sm-body{display:flex;height:260px}
+.sm-left{flex:1;padding:8px 0;border-right:1px solid #d0c8b8}
+.sm-right{width:140px;padding:8px 0;background:#eae6d8}
+.sm-item{
   display:flex;align-items:center;gap:8px;
+  padding:4px 10px;cursor:pointer;font-size:11px;
 }
-.skill-tags{display:flex;flex-wrap:wrap;gap:8px}
-.skill-tag{
-  font-size:.76rem;font-weight:700;padding:5px 14px;border-radius:30px;
-  background:rgba(155,93,229,.15);border:1px solid rgba(155,93,229,.3);
-  color:var(--text);letter-spacing:.02em;
-  transition:background .15s,transform .15s;
+.sm-item:hover{background:var(--xp-blue);color:#fff}
+.sm-item .sm-ico{font-size:1.3rem;width:24px;text-align:center}
+.sm-item span{font-size:11px}
+.sm-divider{height:1px;background:#d0c8b8;margin:4px 0}
+.sm-section-title{font-size:10px;color:#666;padding:2px 10px;font-weight:700}
+.sm-footer{
+  background:linear-gradient(90deg,#1b5de8,#3a8af0);
+  padding:4px 10px;
+  display:flex;justify-content:flex-end;gap:6px;
 }
-.skill-tag:hover{background:rgba(155,93,229,.3);transform:scale(1.06)}
-.skill-tag.pink{background:rgba(255,110,199,.12);border-color:rgba(255,110,199,.35);color:var(--pink2)}
-.skill-tag.cyan{background:rgba(0,245,212,.08);border-color:rgba(0,245,212,.3);color:var(--cyan)}
-.skill-tag.orange{background:rgba(255,157,77,.1);border-color:rgba(255,157,77,.3);color:var(--orange)}
+.sm-footer-btn{
+  display:flex;align-items:center;gap:4px;
+  color:#fff;font-size:11px;cursor:pointer;padding:2px 6px;border-radius:2px;
+}
+.sm-footer-btn:hover{background:rgba(255,255,255,.2)}
 
-/* ── TIMELINE ── */
-.timeline{display:flex;flex-direction:column}
-.tl-item{display:grid;grid-template-columns:20px 1fr;gap:0 22px}
-.tl-line{display:flex;flex-direction:column;align-items:center}
-.tl-dot{
-  width:16px;height:16px;border-radius:50%;
-  background:var(--pink);box-shadow:0 0 12px var(--pink);
-  flex-shrink:0;margin-top:5px;
-  animation:pulse-dot 2s ease-in-out infinite;
+/* ── XP SECTIONS inside windows ── */
+.section-title{
+  font-size:13px;font-weight:700;color:var(--xp-blue);
+  border-bottom:1px solid var(--xp-blue);
+  padding-bottom:4px;margin-bottom:10px;
+  display:flex;align-items:center;gap:6px;
 }
-@keyframes pulse-dot{
-  0%,100%{box-shadow:0 0 8px var(--pink)}
-  50%{box-shadow:0 0 20px var(--pink),0 0 35px rgba(255,110,199,.4)}
-}
-.tl-connector{width:2px;flex:1;min-height:18px;margin:5px 0;
-  background:linear-gradient(180deg,var(--pink),var(--purple))}
-.tl-body{padding-bottom:38px}
-.tl-period{font-size:.7rem;font-weight:800;letter-spacing:.12em;color:var(--purple2);margin-bottom:4px}
-.tl-role{font-family:'Orbitron',monospace;font-size:.88rem;font-weight:700;color:var(--text);margin-bottom:3px}
-.tl-company{font-size:.83rem;color:var(--orange);font-weight:700;margin-bottom:10px}
-.tl-bullets{list-style:none;display:flex;flex-direction:column;gap:6px}
-.tl-bullets li{font-size:.85rem;line-height:1.65;color:var(--muted);padding-left:16px;position:relative}
-.tl-bullets li::before{content:'✦';position:absolute;left:0;color:var(--cyan);font-size:.65rem;top:3px}
+.info-row{display:flex;gap:6px;align-items:flex-start;margin-bottom:6px;font-size:11px}
+.info-label{font-weight:700;min-width:90px;color:#444}
+.info-value{color:#000;flex:1}
 
-/* ── CREATIVE / BLOG ── */
-.creative-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
-@media(max-width:640px){.creative-grid{grid-template-columns:1fr}}
-.creative-card{
-  background:var(--card);backdrop-filter:blur(8px);
-  border:1.5px solid var(--border);border-radius:26px;
-  padding:36px 28px;text-align:center;text-decoration:none;
-  display:flex;flex-direction:column;align-items:center;gap:14px;
-  transition:border-color .2s,transform .22s,box-shadow .22s;
-  position:relative;overflow:hidden;
+/* skill tags */
+.xp-tag{
+  display:inline-block;padding:1px 6px;
+  background:#ddeeff;border:1px solid #7fb0d0;
+  border-radius:2px;font-size:10px;margin:2px;
 }
-.creative-card::before{
-  content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse at 50% 0%,rgba(255,110,199,.08) 0%,transparent 70%);
+
+/* XP table */
+.xp-table{width:100%;border-collapse:collapse;font-size:11px}
+.xp-table th{background:var(--xp-blue);color:#fff;padding:3px 6px;text-align:left}
+.xp-table td{padding:3px 6px;border-bottom:1px solid #d0c8b8}
+.xp-table tr:nth-child(even) td{background:#eae6d8}
+
+/* ── ALERT / ERROR DIALOG ── */
+.xp-alert{
+  position:fixed;
+  background:var(--xp-gray2);
+  border:2px solid var(--xp-blue);
+  border-radius:6px 6px 4px 4px;
+  box-shadow:4px 4px 10px rgba(0,0,0,.6);
+  z-index:5000;
+  min-width:240px;
+  max-width:340px;
+  display:none;
+}
+.xp-alert.active{display:block}
+.xp-alert .xp-titlebar{border-radius:4px 4px 0 0}
+.xp-alert-body{
+  padding:14px 16px;
+  display:flex;gap:12px;align-items:flex-start;
+}
+.xp-alert-icon{font-size:2.2rem;line-height:1;flex-shrink:0}
+.xp-alert-text{font-size:11px;line-height:1.6;flex:1}
+.xp-alert-btns{
+  display:flex;justify-content:center;gap:6px;
+  padding:0 16px 12px;
+}
+.xp-push-btn{
+  background:var(--xp-btn);
+  border:1px solid #aca899;
+  border-radius:2px;
+  padding:3px 20px;font-size:11px;
+  cursor:pointer;
+  box-shadow:var(--xp-shadow);
+  min-width:70px;font-family:'Tahoma',sans-serif;
+}
+.xp-push-btn:hover{background:linear-gradient(180deg,#fff4c0 0%,#ffe080 100%)}
+.xp-push-btn:active{box-shadow:var(--xp-shadow-in)}
+
+/* ── CAT ── */
+#desktop-cat{
+  position:fixed;bottom:38px;right:20px;
+  font-size:2.5rem;z-index:500;
+  animation:catbounce 2s ease-in-out infinite;
+  cursor:pointer;
+  filter:drop-shadow(2px 2px 4px rgba(0,0,0,.4));
+}
+@keyframes catbounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+
+/* ── SCROLLBAR XP style ── */
+::-webkit-scrollbar{width:16px}
+::-webkit-scrollbar-track{background:#d4d0c8;border:1px solid #aca899}
+::-webkit-scrollbar-thumb{background:linear-gradient(90deg,#e0ddd0,#c0bdb0);border:1px solid #aca899;border-radius:2px}
+::-webkit-scrollbar-button{background:var(--xp-btn);border:1px solid #aca899;height:16px;display:block}
+
+/* ── WALLPAPER CLOUDS ── */
+.cloud{
+  position:fixed;pointer-events:none;
+  font-size:4rem;opacity:.15;
+  animation:drift linear infinite;
+}
+@keyframes drift{0%{transform:translateX(-150px)}100%{transform:translateX(calc(100vw + 150px))}}
+
+/* ── MONAS CHINAS ── */
+.mona{
+  position:fixed;z-index:3;
+  height:140px;width:auto;
+  animation:monaFloat 5s ease-in-out infinite;
+  filter:drop-shadow(2px 4px 6px rgba(0,0,0,.5));
+  cursor:pointer;
+  transition:transform .15s;
+  image-rendering:auto;
+}
+.mona:hover{
+  animation:monaFloat 5s ease-in-out infinite, monaGlow 1s ease-in-out infinite alternate;
+  filter:drop-shadow(0 0 12px rgba(255,180,255,.9)) drop-shadow(2px 4px 6px rgba(0,0,0,.5));
+  transform:scale(1.15)!important;
+}
+@keyframes monaFloat{
+  0%,100%{transform:translateY(0) rotate(-2deg)}
+  50%{transform:translateY(-12px) rotate(2deg)}
+}
+@keyframes monaGlow{
+  0%{filter:drop-shadow(0 0 8px rgba(255,150,255,.8))}
+  100%{filter:drop-shadow(0 0 18px rgba(150,200,255,.9))}
+}
+
+/* sparkle trail */
+.sparkle{position:fixed;pointer-events:none;z-index:9998;font-size:.9rem;opacity:0;animation:sparkleUp 1.2s ease-out forwards}
+@keyframes sparkleUp{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-60px) scale(.3)}}
+
+/* rainbow text */
+.rainbow{background:linear-gradient(90deg,#ff6ec7,#ffb347,#ffe066,#6aff6a,#66d4ff,#c77dff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800}
+
+/* ── MODO SERIO ── */
+#modo-serio-btn{
+  position:fixed;top:40px;left:14px;
+  z-index:999999 !important;
+  background:linear-gradient(180deg,#f0eedf,#d4d0c8);
+  border:2px solid #666;
+  border-radius:4px;
+  padding:6px 14px;
+  font-family:'Tahoma',sans-serif;
+  font-size:12px;font-weight:700;
+  cursor:pointer !important;
+  pointer-events:all !important;
+  box-shadow:2px 2px 0 #fff inset,-2px -2px 0 #808080 inset;
+  transition:background .1s;
+  white-space:nowrap;
+  user-select:none !important;
+  -webkit-user-select:none !important;
+  isolation:isolate;
+}
+#modo-serio-btn:hover{filter:brightness(1.08)}
+#modo-serio-btn:active{box-shadow:-2px -2px 0 #fff inset,2px 2px 0 #808080 inset}
+#modo-serio-btn.serio-on{
+  background:linear-gradient(180deg,#c8dff0,#a0c0d8);
+  border-color:#5080a0;
+}
+
+/* sad wallpaper — debajo del botón */
+#sad-wallpaper{
+  position:fixed;inset:0;
+  z-index:9000;
   pointer-events:none;
+  display:none;
+  align-items:center;justify-content:center;
+  flex-direction:column;gap:24px;
+  background:#000;
 }
-.creative-card:hover{
-  border-color:rgba(255,110,199,.55);
-  transform:translateY(-7px);
-  box-shadow:0 14px 40px rgba(255,110,199,.2);
+#sad-wallpaper.visible{display:flex}
+#sad-wallpaper .sad-face{
+  font-family:'Tahoma',monospace;
+  font-size:clamp(5rem,18vw,14rem);
+  line-height:1;color:#fff;
+  animation:sadBob 4s ease-in-out infinite;
+  text-shadow:0 0 40px rgba(255,255,255,.15);
 }
-.creative-icon{font-size:3rem;line-height:1;filter:drop-shadow(0 0 10px rgba(255,110,199,.5))}
-.creative-title{font-family:'Orbitron',monospace;font-size:.9rem;font-weight:700;color:var(--text)}
-.creative-desc{font-size:.83rem;color:var(--muted);line-height:1.7;max-width:26ch;margin:0 auto}
-.creative-link{
-  font-size:.78rem;font-weight:800;color:var(--pink2);
-  letter-spacing:.06em;text-shadow:0 0 6px var(--pink);
-}
-
-/* ── SOCIAL PILLS ── */
-.social-row{display:flex;flex-wrap:wrap;gap:16px;justify-content:center;margin-top:14px}
-.social-pill{
-  display:inline-flex;align-items:center;gap:10px;
-  padding:14px 28px;border-radius:50px;text-decoration:none;
-  font-weight:800;font-size:.88rem;letter-spacing:.04em;
-  border:1.5px solid;transition:transform .18s,box-shadow .18s;
-}
-.social-pill:hover{transform:translateY(-3px) scale(1.05)}
-.social-pill.twitter{color:#1DA1F2;border-color:#1DA1F2;background:rgba(29,161,242,.07)}
-.social-pill.twitter:hover{box-shadow:0 0 22px rgba(29,161,242,.45)}
-.social-pill.twitch{color:#9147FF;border-color:#9147FF;background:rgba(145,71,255,.07)}
-.social-pill.twitch:hover{box-shadow:0 0 22px rgba(145,71,255,.45)}
-.social-pill.github{color:var(--text);border-color:var(--border);background:rgba(255,255,255,.04)}
-.social-pill.github:hover{box-shadow:0 0 22px rgba(255,255,255,.15)}
-.social-pill.linkedin{color:#60a5fa;border-color:#60a5fa;background:rgba(96,165,250,.07)}
-.social-pill.linkedin:hover{box-shadow:0 0 22px rgba(96,165,250,.4)}
-
-/* ── DIVIDER ── */
-.divider{
-  position:relative;z-index:1;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(155,93,229,.4),rgba(255,110,199,.4),rgba(155,93,229,.4),transparent);
-  max-width:1020px;margin:0 auto;
+@keyframes sadBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+#sad-wallpaper .sad-text{
+  font-family:'Tahoma',sans-serif;
+  font-size:13px;color:rgba(255,255,255,.4);
+  letter-spacing:.1em;
+  text-align:center;line-height:2;
 }
 
-/* ── FOOTER ── */
-footer{
-  position:relative;z-index:1;text-align:center;
-  padding:28px 20px;
-  border-top:1px solid var(--border);
-  font-size:.8rem;color:var(--muted);letter-spacing:.04em;
+/* uwu badge */
+#uwu-badge{
+  position:fixed;top:40px;right:14px;z-index:400;
+  background:linear-gradient(135deg,#ffb3e0,#c77dff);
+  border:2px solid #fff;border-radius:50%;
+  width:58px;height:58px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.85rem;font-weight:800;color:#fff;
+  text-shadow:1px 1px 2px rgba(0,0,0,.3);
+  box-shadow:0 0 12px rgba(255,150,200,.6);
+  animation:uwuPop 1.5s ease-in-out infinite;
+  cursor:pointer;
 }
-footer span{color:var(--pink)}
+@keyframes uwuPop{0%,100%{transform:scale(1) rotate(-5deg)}50%{transform:scale(1.12) rotate(5deg)}}
 
-/* ── FLOATING EMOJIS ON CLICK ── */
-.float-emoji{
-  position:fixed;pointer-events:none;z-index:9990;
-  font-size:1.4rem;opacity:0;
-  animation:floatUp 2s ease-out forwards;
+/* marquee strip */
+#marquee-strip{
+  position:fixed;top:0;left:0;right:0;z-index:9990;
+  background:linear-gradient(90deg,#ff6ec7,#c77dff,#66d4ff,#ffb347,#ff6ec7);
+  background-size:200% 100%;
+  animation:marqueeGrad 3s linear infinite;
+  height:20px;overflow:hidden;
+  display:flex;align-items:center;
 }
-@keyframes floatUp{
-  0%{opacity:.9;transform:translateY(0) scale(1) rotate(0deg)}
-  100%{opacity:0;transform:translateY(-100px) scale(.5) rotate(20deg)}
+@keyframes marqueeGrad{0%{background-position:0% 50%}100%{background-position:200% 50%}}
+#marquee-strip .marquee-text{
+  white-space:nowrap;
+  animation:marqueeScroll 18s linear infinite;
+  font-size:11px;font-weight:800;color:#fff;
+  text-shadow:1px 1px 2px rgba(0,0,0,.3);
+  padding-left:100%;
+}
+@keyframes marqueeScroll{0%{transform:translateX(0)}100%{transform:translateX(-100%)}}
+
+/* ── BSOD ── */
+#bsod{
+  position:fixed;inset:0;
+  background:#000080;
+  color:#fff;
+  font-family:'Courier New',monospace;
+  font-size:14px;
+  padding:40px 60px;
+  z-index:99998;
+  display:none;
+  line-height:1.8;
 }
 
-/* ── SCROLLBAR ── */
-::-webkit-scrollbar{width:5px}
-::-webkit-scrollbar-track{background:var(--bg0)}
-::-webkit-scrollbar-thumb{background:linear-gradient(var(--pink),var(--purple));border-radius:3px}
+/* progress bar */
+.xp-progress-outer{background:#fff;border:1px solid #aca899;height:14px;border-radius:1px;overflow:hidden;margin:4px 0}
+.xp-progress-inner{height:100%;background:linear-gradient(90deg,#1a5de0,#4a8df0);animation:prog 2s linear infinite}
+@keyframes prog{0%{width:0%}100%{width:100%}}
 </style>
 </head>
 <body>
 
-<div id="cursor">🐱</div>
-<canvas id="stars-canvas"></canvas>
-<canvas id="petal-canvas"></canvas>
+<!-- WALLPAPER CLOUDS -->
+<div class="cloud" style="top:15%;animation-duration:28s;animation-delay:-5s">☁</div>
+<div class="cloud" style="top:35%;animation-duration:22s;animation-delay:-12s;font-size:2.5rem;opacity:.1">☁</div>
+<div class="cloud" style="top:55%;animation-duration:35s;animation-delay:-20s;font-size:5rem;opacity:.08">☁</div>
 
-<!-- NAV -->
-<nav>
-  <div class="nav-logo">LunaSh<span>.dev</span></div>
-  <ul class="nav-links">
-    <li><a href="#about">about</a></li>
-    <li><a href="#skills">skills</a></li>
-    <li><a href="#experience">experience</a></li>
-    <li><a href="#creative">blog</a></li>
-    <li><a href="#social">contact</a></li>
-  </ul>
-</nav>
+<!-- DESKTOP ICONS -->
+<div id="desktop">
+  <div class="desktop-icon" onclick="openWin('win-about')" tabindex="0">
+    <div class="ico">🖥️</div>
+    <span>My Computer</span>
+  </div>
+  <div class="desktop-icon" onclick="openWin('win-skills')" tabindex="0">
+    <div class="ico">📁</div>
+    <span>Skills</span>
+  </div>
+  <div class="desktop-icon" onclick="openWin('win-exp')" tabindex="0">
+    <div class="ico">💼</div>
+    <span>Experience</span>
+  </div>
+  <div class="desktop-icon" onclick="openWin('win-blog')" tabindex="0">
+    <div class="ico">🌐</div>
+    <span>El Jardín de Medianoche</span>
+  </div>
+  <div class="desktop-icon" onclick="openWin('win-social')" tabindex="0">
+    <div class="ico">📧</div>
+    <span>Contact</span>
+  </div>
+  <div class="desktop-icon" onclick="openWin('win-cv')" tabindex="0">
+    <div class="ico">📄</div>
+    <span>CV.pdf</span>
+  </div>
+  <div class="desktop-icon" onclick="triggerBsod()" tabindex="0">
+    <div class="ico">⚠️</div>
+    <span>DO NOT OPEN</span>
+  </div>
+</div>
 
-<!-- HERO -->
-<section id="hero" style="max-width:100%;padding:0">
-  <div class="sky"></div>
-  <div class="moon"></div>
-  <div class="hero-sparkle" style="top:18%;left:12%;animation-delay:.3s">✦</div>
-  <div class="hero-sparkle" style="top:24%;left:28%;animation-delay:.9s;font-size:.6rem">★</div>
-  <div class="hero-sparkle" style="top:15%;right:28%;animation-delay:.5s;font-size:.7rem">✦</div>
-  <div class="hero-sparkle" style="top:30%;right:10%;animation-delay:1.2s">🌸</div>
-  <div class="hero-sparkle" style="top:40%;left:8%;animation-delay:.7s;font-size:.8rem">✦</div>
-  <div class="hero-content">
-    <div class="hero-tag">🌸 fullstack developer 🌸</div>
-    <h1 class="hero-name">Diana Ogaz</h1>
-    <p class="hero-role">Spring Boot · Angular 17 · Android · <em>kawaii code ♡</em></p>
-    <div class="hero-btns">
-      <a href="#experience" class="kbtn kbtn-primary">🐾 my work</a>
-      <a href="#social" class="kbtn kbtn-secondary">✉ contact me</a>
+<!-- DESKTOP CAT -->
+<div id="desktop-cat" onclick="catClick()" title="🐱">🐱</div>
+
+<!-- ████ WINDOWS ████ -->
+
+<!-- ABOUT / MY COMPUTER -->
+<div class="xp-window" id="win-about" style="top:60px;left:160px;width:480px">
+  <div class="xp-titlebar" onmousedown="startDrag(event,'win-about')">
+    <div class="xp-titlebar-icon">🖥️</div>
+    <div class="xp-titlebar-text">My Computer — Diana Teresa Ogaz Escarpita</div>
+    <div class="xp-titlebar-btns">
+      <div class="xp-btn-win" onclick="minimizeWin('win-about')">_</div>
+      <div class="xp-btn-win" onclick="maximizeWin('win-about')">□</div>
+      <div class="xp-btn-win xp-btn-close" onclick="closeWin('win-about')">✕</div>
     </div>
   </div>
-  <div class="city"></div>
-  <canvas id="city-lights" style="position:absolute;bottom:0;left:0;width:100%;height:210px;z-index:3;pointer-events:none"></canvas>
-  <div class="city-glow"></div>
-</section>
-
-<!-- ABOUT -->
-<div class="divider"></div>
-<section id="about">
-  <p class="sec-label">✦ who i am</p>
-  <h2 class="sec-title">about <span>me</span></h2>
-  <div class="about-grid">
-    <div class="about-text">
-      <p>Hi! I'm <strong>Diana</strong>, a fullstack developer from <strong>Chihuahua, México</strong> 🌵</p>
-      <p>I build end-to-end solutions — from <strong>Spring Boot microservices</strong> and <strong>SQL stored procedures</strong> to <strong>Angular 17</strong> frontends and <strong>native Android apps</strong>. I enjoy modernizing legacy systems and creating clean, scalable architectures.</p>
-      <p>When I'm not coding I write <strong>poems & short stories</strong>, stream on Twitch and enthusiastically pet every cat I encounter. My aesthetic? Cyberpunk pastel. Obviously 🌸</p>
-    </div>
-    <div class="about-stats">
-      <div class="stat-card">
-        <div class="stat-icon">⚡</div>
-        <div><div class="stat-val">3+</div><div class="stat-desc">years of production experience</div></div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon">🔄</div>
-        <div><div class="stat-val">2</div><div class="stat-desc">major legacy migrations (Java 8→11, Angular 8→17)</div></div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon">🎯</div>
-        <div><div class="stat-val">100%</div><div class="stat-desc">on-time or early delivery rate</div></div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon">🐾</div>
-        <div><div class="stat-val">∞</div><div class="stat-desc">cat enthusiasm</div></div>
-      </div>
-    </div>
+  <div class="xp-menubar">
+    <div class="xp-menu-item">File</div>
+    <div class="xp-menu-item">Edit</div>
+    <div class="xp-menu-item">View</div>
+    <div class="xp-menu-item">Help</div>
   </div>
-</section>
+  <div class="xp-toolbar">
+    <button class="xp-toolbar-btn">⬅ Back</button>
+    <button class="xp-toolbar-btn">➡ Forward</button>
+    <button class="xp-toolbar-btn">⬆ Up</button>
+    <button class="xp-toolbar-btn">🔍 Search</button>
+    <button class="xp-toolbar-btn">📁 Folders</button>
+  </div>
+  <div class="xp-content" style="max-height:340px">
+    <div class="section-title">🖥️ System Properties</div>
+    <div style="display:flex;gap:16px;align-items:flex-start">
+      <div style="font-size:4rem;filter:drop-shadow(2px 2px 4px rgba(0,0,0,.3))">👩‍💻</div>
+      <div style="flex:1">
+        <div class="info-row"><span class="info-label">Name:</span><span class="info-value">Diana Teresa Ogaz Escarpita</span></div>
+        <div class="info-row"><span class="info-label">Alias:</span><span class="info-value">LunaSh.dev 🌙</span></div>
+        <div class="info-row"><span class="info-label">Location:</span><span class="info-value">Chihuahua, México 🌵</span></div>
+        <div class="info-row"><span class="info-label">Role:</span><span class="info-value">Fullstack Developer</span></div>
+        <div class="info-row"><span class="info-label">Stack:</span><span class="info-value">Spring Boot · Angular 17 · Android</span></div>
+        <div class="info-row"><span class="info-label">Uptime:</span><span class="info-value">3+ years in production</span></div>
+        <div class="info-row"><span class="info-label">English:</span><span class="info-value">B1</span></div>
+      </div>
+    </div>
+    <br>
+    <div class="section-title">📋 About</div>
+    <p style="font-size:11px;line-height:1.8;color:#222">
+      Fullstack developer who builds end-to-end solutions — from Spring Boot microservices and SQL stored procedures to Angular 17 frontends and native Android apps. Experienced in modernizing legacy systems, clean migrations, and delivering on time (or ahead of it). Also: poet, cat enthusiast, and night owl. 🌙
+    </p>
+    <br>
+    <div class="xp-progress-outer" title="Cat enthusiasm: 100%">
+      <div class="xp-progress-inner"></div>
+    </div>
+    <div style="font-size:10px;color:#666;text-align:right">Cat enthusiasm: loading... 🐱</div>
+  </div>
+</div>
 
 <!-- SKILLS -->
-<div class="divider"></div>
-<section id="skills">
-  <p class="sec-label">✦ what i use</p>
-  <h2 class="sec-title">technical <span>skills</span></h2>
-  <div class="skills-grid">
-    <div class="skill-cat">
-      <div class="skill-cat-title">☁ backend</div>
-      <div class="skill-tags">
-        <span class="skill-tag">Spring Boot</span><span class="skill-tag">REST APIs</span>
-        <span class="skill-tag">Microservices</span><span class="skill-tag">Java</span>
-        <span class="skill-tag">Stored Procedures</span><span class="skill-tag">SQL Server</span>
-        <span class="skill-tag">MySQL</span>
-      </div>
-    </div>
-    <div class="skill-cat">
-      <div class="skill-cat-title" style="color:var(--pink2)">🌸 frontend</div>
-      <div class="skill-tags">
-        <span class="skill-tag pink">Angular 17</span><span class="skill-tag pink">TypeScript</span>
-        <span class="skill-tag pink">Next.js</span><span class="skill-tag pink">JavaScript</span>
-        <span class="skill-tag pink">Bootstrap</span><span class="skill-tag pink">HTML / CSS</span>
-      </div>
-    </div>
-    <div class="skill-cat">
-      <div class="skill-cat-title" style="color:var(--orange)">📱 mobile</div>
-      <div class="skill-tags">
-        <span class="skill-tag orange">Android Studio</span>
-        <span class="skill-tag orange">Java 11 / 8</span>
-        <span class="skill-tag orange">Kotlin</span>
-      </div>
-    </div>
-    <div class="skill-cat">
-      <div class="skill-cat-title" style="color:var(--cyan)">🛠 tools & practices</div>
-      <div class="skill-tags">
-        <span class="skill-tag cyan">Git / GitHub</span><span class="skill-tag cyan">Figma (advanced)</span>
-        <span class="skill-tag cyan">Postman</span><span class="skill-tag cyan">Jira</span>
-        <span class="skill-tag cyan">Agile / Scrum</span><span class="skill-tag cyan">QA Testing</span>
-        <span class="skill-tag cyan">C#</span>
-      </div>
+<div class="xp-window" id="win-skills" style="top:80px;left:220px;width:460px">
+  <div class="xp-titlebar" onmousedown="startDrag(event,'win-skills')">
+    <div class="xp-titlebar-icon">📁</div>
+    <div class="xp-titlebar-text">C:\Diana\Skills — File Explorer</div>
+    <div class="xp-titlebar-btns">
+      <div class="xp-btn-win" onclick="minimizeWin('win-skills')">_</div>
+      <div class="xp-btn-win" onclick="maximizeWin('win-skills')">□</div>
+      <div class="xp-btn-win xp-btn-close" onclick="closeWin('win-skills')">✕</div>
     </div>
   </div>
-</section>
+  <div class="xp-menubar"><div class="xp-menu-item">File</div><div class="xp-menu-item">View</div><div class="xp-menu-item">Tools</div></div>
+  <div class="xp-addressbar">
+    <label>Address:</label>
+    <input class="xp-address-input" value="C:\Diana\Skills" readonly/>
+    <button class="xp-toolbar-btn">Go</button>
+  </div>
+  <div class="xp-content" style="max-height:340px">
+    <div class="section-title">☁ Backend</div>
+    <div>
+      <span class="xp-tag">Spring Boot</span><span class="xp-tag">REST APIs</span>
+      <span class="xp-tag">Microservices</span><span class="xp-tag">Java</span>
+      <span class="xp-tag">Stored Procedures</span><span class="xp-tag">SQL Server</span>
+      <span class="xp-tag">MySQL</span>
+    </div>
+    <br>
+    <div class="section-title">🌸 Frontend</div>
+    <div>
+      <span class="xp-tag" style="background:#ffeeff;border-color:#d0a0d0">Angular 17</span>
+      <span class="xp-tag" style="background:#ffeeff;border-color:#d0a0d0">TypeScript</span>
+      <span class="xp-tag" style="background:#ffeeff;border-color:#d0a0d0">Next.js</span>
+      <span class="xp-tag" style="background:#ffeeff;border-color:#d0a0d0">JavaScript</span>
+      <span class="xp-tag" style="background:#ffeeff;border-color:#d0a0d0">Bootstrap</span>
+      <span class="xp-tag" style="background:#ffeeff;border-color:#d0a0d0">HTML/CSS</span>
+    </div>
+    <br>
+    <div class="section-title">📱 Mobile</div>
+    <div>
+      <span class="xp-tag" style="background:#fff4e0;border-color:#d0a060">Android Studio</span>
+      <span class="xp-tag" style="background:#fff4e0;border-color:#d0a060">Java 11/8</span>
+      <span class="xp-tag" style="background:#fff4e0;border-color:#d0a060">Kotlin</span>
+    </div>
+    <br>
+    <div class="section-title">🛠 Tools</div>
+    <div>
+      <span class="xp-tag" style="background:#e0ffee;border-color:#60c090">Git/GitHub</span>
+      <span class="xp-tag" style="background:#e0ffee;border-color:#60c090">Figma (adv.)</span>
+      <span class="xp-tag" style="background:#e0ffee;border-color:#60c090">Postman</span>
+      <span class="xp-tag" style="background:#e0ffee;border-color:#60c090">Jira</span>
+      <span class="xp-tag" style="background:#e0ffee;border-color:#60c090">Agile/Scrum</span>
+      <span class="xp-tag" style="background:#e0ffee;border-color:#60c090">QA Testing</span>
+    </div>
+  </div>
+</div>
 
 <!-- EXPERIENCE -->
-<div class="divider"></div>
-<section id="experience">
-  <p class="sec-label">✦ where i've been</p>
-  <h2 class="sec-title">experience <span>timeline</span></h2>
-  <div class="timeline">
-    <div class="tl-item">
-      <div class="tl-line">
-        <div class="tl-dot"></div>
-        <div class="tl-connector"></div>
-      </div>
-      <div class="tl-body">
-        <div class="tl-period">FEB 2024 — PRESENT</div>
-        <div class="tl-role">Fullstack Developer</div>
-        <div class="tl-company">Grupo Roga</div>
-        <ul class="tl-bullets">
-          <li>Architected RESTful microservices with Spring Boot consumed by native Android (Java 11/8) and Angular 17 SPA, enabling a fully decoupled, scalable system.</li>
-          <li>Led clean migrations: legacy Android Java 8→11 and Angular 8→17 with zero regression.</li>
-          <li>Optimized legacy stored procedures (SQL Server), reducing executive report load times by 40%.</li>
-          <li>Built reusable Angular 17 components integrated with REST APIs, cutting UI dev time ~15%.</li>
-          <li>Delivered all features on time or ahead of schedule across all Agile/Scrum sprints.</li>
-        </ul>
-      </div>
+<div class="xp-window" id="win-exp" style="top:100px;left:180px;width:520px">
+  <div class="xp-titlebar" onmousedown="startDrag(event,'win-exp')">
+    <div class="xp-titlebar-icon">💼</div>
+    <div class="xp-titlebar-text">Experience.xls — Microsoft Excel</div>
+    <div class="xp-titlebar-btns">
+      <div class="xp-btn-win" onclick="minimizeWin('win-exp')">_</div>
+      <div class="xp-btn-win" onclick="maximizeWin('win-exp')">□</div>
+      <div class="xp-btn-win xp-btn-close" onclick="closeWin('win-exp')">✕</div>
     </div>
-    <div class="tl-item">
-      <div class="tl-line">
-        <div class="tl-dot" style="background:var(--purple2);box-shadow:0 0 12px var(--purple2)"></div>
-        <div class="tl-connector" style="background:linear-gradient(180deg,var(--purple2),var(--cyan))"></div>
-      </div>
-      <div class="tl-body">
-        <div class="tl-period">MAY 2023 — FEB 2024</div>
-        <div class="tl-role">Project Manager / Frontend Developer</div>
-        <div class="tl-company">Grupo de Seguros Promessa</div>
-        <ul class="tl-bullets">
-          <li>Managed backlog and QA cycles for a 5-person Agile team (Jira), 100% on-time delivery rate.</li>
-          <li>Developed and unit-tested frontend components integrated with REST APIs.</li>
-        </ul>
-      </div>
+  </div>
+  <div class="xp-menubar"><div class="xp-menu-item">File</div><div class="xp-menu-item">Edit</div><div class="xp-menu-item">Insert</div><div class="xp-menu-item">Format</div><div class="xp-menu-item">Tools</div></div>
+  <div class="xp-content" style="max-height:380px">
+    <table class="xp-table">
+      <tr><th>Company</th><th>Role</th><th>Period</th></tr>
+      <tr>
+        <td><b>Grupo Roga</b></td>
+        <td>Fullstack Developer</td>
+        <td>Feb 2024 – Present</td>
+      </tr>
+      <tr><td colspan="3" style="padding:6px 10px;font-size:11px;color:#333;background:#f5f3ea">
+        • RESTful microservices with Spring Boot → Android (Java 11/8) + Angular 17<br>
+        • Clean migrations: Java 8→11, Angular 8→17 — zero regression<br>
+        • SQL Server SP optimization — 40% faster report load times<br>
+        • 100% on-time or early delivery across all sprints ✓
+      </td></tr>
+      <tr>
+        <td><b>Promessa</b></td>
+        <td>PM / Frontend Dev</td>
+        <td>May 2023 – Feb 2024</td>
+      </tr>
+      <tr><td colspan="3" style="padding:6px 10px;font-size:11px;color:#333;background:#f5f3ea">
+        • QA cycles & backlog for 5-person Agile team (Jira) — 100% on-time<br>
+        • Frontend components + REST API integration
+      </td></tr>
+      <tr>
+        <td><b>Automoción</b></td>
+        <td>Professional Internship</td>
+        <td>Jun – Dec 2022</td>
+      </tr>
+      <tr><td colspan="3" style="padding:6px 10px;font-size:11px;color:#333;background:#f5f3ea">
+        • Warehouse materials management system — Java + MySQL, 3 phases<br>
+        • Post-delivery maintenance & user training
+      </td></tr>
+    </table>
+    <br>
+    <div class="section-title">🎓 Education</div>
+    <div class="info-row"><span class="info-label">Degree:</span><span class="info-value">B.S. Computer Systems Engineering</span></div>
+    <div class="info-row"><span class="info-label">School:</span><span class="info-value">Instituto Tecnológico de Chihuahua II</span></div>
+    <div class="info-row"><span class="info-label">Period:</span><span class="info-value">2018 – 2023</span></div>
+  </div>
+</div>
+
+<!-- BLOG -->
+<div class="xp-window" id="win-blog" style="top:120px;left:200px;width:400px">
+  <div class="xp-titlebar" onmousedown="startDrag(event,'win-blog')">
+    <div class="xp-titlebar-icon">🌐</div>
+    <div class="xp-titlebar-text">Internet Explorer — El Jardín de Medianoche</div>
+    <div class="xp-titlebar-btns">
+      <div class="xp-btn-win" onclick="minimizeWin('win-blog')">_</div>
+      <div class="xp-btn-win" onclick="maximizeWin('win-blog')">□</div>
+      <div class="xp-btn-win xp-btn-close" onclick="closeWin('win-blog')">✕</div>
     </div>
-    <div class="tl-item">
-      <div class="tl-line">
-        <div class="tl-dot" style="background:var(--cyan);box-shadow:0 0 12px var(--cyan)"></div>
+  </div>
+  <div class="xp-menubar"><div class="xp-menu-item">File</div><div class="xp-menu-item">View</div><div class="xp-menu-item">Favorites</div><div class="xp-menu-item">Tools</div></div>
+  <div class="xp-addressbar">
+    <label>Address:</label>
+    <input class="xp-address-input" value="https://lunash.blog" readonly/>
+    <button class="xp-toolbar-btn" onclick="window.open('blog/index.html','_blank')">Go 🌐</button>
+  </div>
+  <div class="xp-content" style="max-height:280px;text-align:center;padding:30px 20px">
+    <div style="font-size:3.5rem;margin-bottom:12px">🥀</div>
+    <div style="font-size:13px;font-weight:700;color:var(--xp-blue);margin-bottom:8px">El Jardín de Medianoche</div>
+    <div style="font-size:11px;color:#444;line-height:1.8;margin-bottom:20px">
+      Escritos · Poemas · Reflexiones de madrugada<br>
+      <i>by Luna Sh</i>
+    </div>
+    <button class="xp-push-btn" style="font-size:12px;padding:6px 24px" onclick="window.open('blog/index.html','_blank')">
+      🌐 Visitar el blog
+    </button>
+    <br><br>
+    <div style="font-size:10px;color:#888;font-style:italic">
+      ⚠ This page is best viewed in Internet Explorer 6.0<br>
+      Screen resolution: 800x600
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT / SOCIAL -->
+<div class="xp-window" id="win-social" style="top:140px;left:240px;width:360px">
+  <div class="xp-titlebar" onmousedown="startDrag(event,'win-social')">
+    <div class="xp-titlebar-icon">📧</div>
+    <div class="xp-titlebar-text">Outlook Express — Contact</div>
+    <div class="xp-titlebar-btns">
+      <div class="xp-btn-win" onclick="minimizeWin('win-social')">_</div>
+      <div class="xp-btn-win" onclick="maximizeWin('win-social')">□</div>
+      <div class="xp-btn-win xp-btn-close" onclick="closeWin('win-social')">✕</div>
+    </div>
+  </div>
+  <div class="xp-content" style="max-height:300px">
+    <div class="section-title">📬 Find me online</div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="display:flex;align-items:center;gap:8px;padding:6px;background:#eae6d8;border:1px solid #d0c8b8;border-radius:2px">
+        <span style="font-size:1.3rem">📧</span>
+        <div>
+          <div style="font-size:10px;color:#666;font-weight:700">EMAIL</div>
+          <div style="font-size:11px">ogazdiana7@gmail.com</div>
+        </div>
       </div>
-      <div class="tl-body">
-        <div class="tl-period">JUN 2022 — DEC 2022</div>
-        <div class="tl-role">Professional Internship</div>
-        <div class="tl-company">Automoción S.A. de C.V.</div>
-        <ul class="tl-bullets">
-          <li>Built a full-stack warehouse materials management system (Java + MySQL) in 3 validated phases.</li>
-          <li>Post-delivery maintenance and end-user training.</li>
-        </ul>
+      <div style="display:flex;align-items:center;gap:8px;padding:6px;background:#eae6d8;border:1px solid #d0c8b8;border-radius:2px;cursor:pointer" onclick="window.open('https://github.com/DianaOgaz','_blank')">
+        <span style="font-size:1.3rem">🐙</span>
+        <div>
+          <div style="font-size:10px;color:#666;font-weight:700">GITHUB</div>
+          <div style="font-size:11px;color:var(--xp-blue);text-decoration:underline">github.com/DianaOgaz</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;padding:6px;background:#eae6d8;border:1px solid #d0c8b8;border-radius:2px;cursor:pointer" onclick="window.open('https://linkedin.com/in/diana-teresa-ogaz-escarpita','_blank')">
+        <span style="font-size:1.3rem">💼</span>
+        <div>
+          <div style="font-size:10px;color:#666;font-weight:700">LINKEDIN</div>
+          <div style="font-size:11px;color:var(--xp-blue);text-decoration:underline">diana-teresa-ogaz-escarpita</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;padding:6px;background:#eae6d8;border:1px solid #d0c8b8;border-radius:2px;cursor:pointer" onclick="window.open('https://twitter.com/','_blank')">
+        <span style="font-size:1.3rem">🐦</span>
+        <div>
+          <div style="font-size:10px;color:#666;font-weight:700">TWITTER / X</div>
+          <div style="font-size:11px;color:var(--xp-blue);text-decoration:underline">@LunaSh</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;padding:6px;background:#eae6d8;border:1px solid #d0c8b8;border-radius:2px;cursor:pointer" onclick="window.open('https://twitch.tv/','_blank')">
+        <span style="font-size:1.3rem">🎮</span>
+        <div>
+          <div style="font-size:10px;color:#666;font-weight:700">TWITCH</div>
+          <div style="font-size:11px;color:var(--xp-blue);text-decoration:underline">twitch.tv/LunaSh</div>
+        </div>
       </div>
     </div>
   </div>
-</section>
+</div>
 
-<!-- BLOG & CREATIVE -->
-<div class="divider"></div>
-<section id="creative">
-  <p class="sec-label">✦ beyond the code</p>
-  <h2 class="sec-title">blog & <span>creative</span> space</h2>
-  <div style="display:flex;flex-direction:column;align-items:center;gap:28px;text-align:center">
-    <p style="color:var(--muted);font-size:.95rem;line-height:1.8;max-width:48ch">
-      Un rincón para palabras que escapan del código · poemas de madrugada · reflexiones cyberpunk · todo lo que no cabe en un commit message 🌸
-    </p>
-    <a href="/blog/" target="_blank" class="kbtn kbtn-blog">
-      🥀 el jardín de Luna Sh
-    </a>
+<!-- CV -->
+<div class="xp-window" id="win-cv" style="top:90px;left:260px;width:360px">
+  <div class="xp-titlebar" onmousedown="startDrag(event,'win-cv')">
+    <div class="xp-titlebar-icon">📄</div>
+    <div class="xp-titlebar-text">CV_Diana_Ogaz.pdf — Adobe Reader</div>
+    <div class="xp-titlebar-btns">
+      <div class="xp-btn-win" onclick="minimizeWin('win-cv')">_</div>
+      <div class="xp-btn-win" onclick="maximizeWin('win-cv')">□</div>
+      <div class="xp-btn-win xp-btn-close" onclick="closeWin('win-cv')">✕</div>
+    </div>
   </div>
-</section>
-
-<!-- SOCIAL -->
-<div class="divider"></div>
-<section id="social">
-  <p class="sec-label">✦ find me online</p>
-  <h2 class="sec-title">let's <span>connect</span></h2>
-  <p style="color:var(--muted);margin-bottom:32px;font-size:.93rem;max-width:50ch">Whether you want to talk code, collaborate, or just watch me fail at video games on Twitch — I'm around 🐱</p>
-  <div class="social-row">
-    <a href="https://twitter.com/" target="_blank" class="social-pill twitter">𝕏 Twitter / X</a>
-    <a href="https://twitch.tv/" target="_blank" class="social-pill twitch">🎮 Twitch</a>
-    <a href="https://github.com/DianaOgaz" target="_blank" class="social-pill github">⌥ GitHub</a>
-    <a href="https://linkedin.com/in/diana-teresa-ogaz-escarpita" target="_blank" class="social-pill linkedin">in LinkedIn</a>
+  <div class="xp-content" style="max-height:300px;text-align:center;padding:28px 20px">
+    <div style="font-size:3rem;margin-bottom:10px">📄</div>
+    <div style="font-size:12px;font-weight:700;color:var(--xp-blue);margin-bottom:6px">CV — Diana Teresa Ogaz Escarpita</div>
+    <div style="font-size:11px;color:#555;margin-bottom:18px;line-height:1.7">
+      Fullstack Developer<br>Spring Boot · Angular 17 · Android<br>
+      <span style="color:#888">Chihuahua, México</span>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:center">
+      <button class="xp-push-btn" onclick="window.open('https://claude.ai/artifact/NGEMat2iRTc6tpiKECqi8Y','_blank')">📥 Download EN</button>
+    </div>
+    <br>
+    <div style="font-size:10px;color:#999;margin-top:8px">
+      Adobe Reader 7.0 required to view this file.
+    </div>
   </div>
-</section>
+</div>
 
-<footer>built with <span>♡</span> and way too much coffee · diana ogaz · 2025</footer>
+<!-- ████ POP-UP ALERTS ████ -->
+
+<div class="xp-alert" id="alert-cat" style="top:200px;left:500px">
+  <div class="xp-titlebar" onmousedown="startDrag(event,'alert-cat')">
+    <div class="xp-titlebar-icon">🐱</div>
+    <div class="xp-titlebar-text">Cat.exe</div>
+    <div class="xp-titlebar-btns">
+      <div class="xp-btn-win xp-btn-close" onclick="closeAlert('alert-cat')">✕</div>
+    </div>
+  </div>
+  <div class="xp-alert-body">
+    <div class="xp-alert-icon">🐈</div>
+    <div class="xp-alert-text">A wild cat has been detected on your desktop.<br><br>Would you like to pet it?</div>
+  </div>
+  <div class="xp-alert-btns">
+    <button class="xp-push-btn" onclick="petCat()">Yes 🐾</button>
+    <button class="xp-push-btn" onclick="closeAlert('alert-cat')">No (wrong)</button>
+  </div>
+</div>
+
+<div class="xp-alert" id="alert-virus" style="top:280px;left:400px">
+  <div class="xp-titlebar" style="background:linear-gradient(180deg,#c00 0%,#800 100%)" onmousedown="startDrag(event,'alert-virus')">
+    <div class="xp-titlebar-icon">⚠️</div>
+    <div class="xp-titlebar-text">VIRUS ALERT — Windows Security</div>
+    <div class="xp-titlebar-btns">
+      <div class="xp-btn-win xp-btn-close" onclick="closeAlert('alert-virus')">✕</div>
+    </div>
+  </div>
+  <div class="xp-alert-body">
+    <div class="xp-alert-icon">🦠</div>
+    <div class="xp-alert-text"><b>CRITICAL THREAT DETECTED</b><br><br>cat_photos_folder.exe is trying to access your heart.<br>Threat level: <b style="color:red">MAXIMUM CUTENESS</b></div>
+  </div>
+  <div class="xp-alert-btns">
+    <button class="xp-push-btn" onclick="closeAlert('alert-virus')">Remove Threat</button>
+    <button class="xp-push-btn" onclick="closeAlert('alert-virus')">Keep Cats ❤️</button>
+  </div>
+</div>
+
+<div class="xp-alert" id="alert-update" style="top:350px;left:550px">
+  <div class="xp-titlebar" onmousedown="startDrag(event,'alert-update')">
+    <div class="xp-titlebar-icon">🔄</div>
+    <div class="xp-titlebar-text">Windows Update</div>
+    <div class="xp-titlebar-btns">
+      <div class="xp-btn-win xp-btn-close" onclick="closeAlert('alert-update')">✕</div>
+    </div>
+  </div>
+  <div class="xp-alert-body">
+    <div class="xp-alert-icon">💿</div>
+    <div class="xp-alert-text">Updates are ready to install:<br><br>• diana_ogaz v3.0 — Fullstack Edition<br>• cat_enthusiasm.dll — patch 4.20<br>• poetry_module.exe — new install<br><br>Install now?</div>
+  </div>
+  <div class="xp-alert-btns">
+    <button class="xp-push-btn" onclick="closeAlert('alert-update')">Install</button>
+    <button class="xp-push-btn" onclick="closeAlert('alert-update')">Remind me later</button>
+  </div>
+</div>
+
+<div class="xp-alert" id="alert-hire" style="top:160px;left:600px">
+  <div class="xp-titlebar" style="background:linear-gradient(180deg,#2a8a2a 0%,#1a6a1a 100%)" onmousedown="startDrag(event,'alert-hire')">
+    <div class="xp-titlebar-icon">✅</div>
+    <div class="xp-titlebar-text">Suggestion from Windows</div>
+    <div class="xp-titlebar-btns">
+      <div class="xp-btn-win xp-btn-close" onclick="closeAlert('alert-hire')">✕</div>
+    </div>
+  </div>
+  <div class="xp-alert-body">
+    <div class="xp-alert-icon">💡</div>
+    <div class="xp-alert-text">Windows has detected that Diana is<br>currently <b>available for hire</b>.<br><br>Would you like to send an email?</div>
+  </div>
+  <div class="xp-alert-btns">
+    <button class="xp-push-btn" onclick="window.location='mailto:ogazdiana7@gmail.com';closeAlert('alert-hire')">Yes, hire her! ✉️</button>
+    <button class="xp-push-btn" onclick="closeAlert('alert-hire')">I'll regret this</button>
+  </div>
+</div>
+
+<!-- MARQUEE STRIP -->
+<div id="marquee-strip">
+  <div class="marquee-text">★ BIENVENID@ A MI PORTFOLIO UwU ★ eres el visitante #10000 🎉 ★ cat_enthusiasm.exe running... ★ hiring me was the best decision u never made ★ uwu owo uwu owo ★ Spring Boot go brrr 🚀 ★ lunash.dev ★ no se aceptan devoluciones ★ </div>
+</div>
+
+<!-- UWU BADGE -->
+<div id="uwu-badge" onclick="spawnRandomAlert()" title="UwU">UwU</div>
+
+<!-- SAD WALLPAPER -->
+<div id="sad-wallpaper">
+  <div class="sad-face">:c</div>
+  <div class="sad-text">modo serio activado<br>por favor contrate a esta desarrolladora<br>gracias por su atención</div>
+</div>
+
+<!-- MODO SERIO BTN -->
+<button id="modo-serio-btn">💼 Modo Serio</button>
+
+<!-- GLITCH BG -->
+<div id="glitch-bg">
+  <div class="scanlines"></div>
+</div>
+<div id="glitch-rgb"></div>
+<div id="glitch-tears"></div>
+<div id="glitch-noise"></div>
+<div id="glitch-invert"></div>
+
+<!-- ANIME POPUP WINDOWS 🌸 -->
+<div class="xp-alert anime-popup" id="ap-asuna1" style="top:80px;left:500px;width:220px">
+  <div class="xp-titlebar" style="background:linear-gradient(180deg,#c44dff,#7b2fff)" onmousedown="startDrag(event,'ap-asuna1')">
+    <div class="xp-titlebar-icon">⚔️</div>
+    <div class="xp-titlebar-text">asuna.exe — SAO System</div>
+    <div class="xp-titlebar-btns"><div class="xp-btn-win xp-btn-close" onclick="closeAlert('ap-asuna1')">✕</div></div>
+  </div>
+  <div style="text-align:center;padding:8px 6px 6px">
+    <img src="img/asuna1.png" style="width:100%;border:2px solid #c44dff;display:block"/>
+    <div style="font-size:10px;margin-top:6px;color:#555;font-style:italic">"Asuna Yuuki ha iniciado sesión.<br>Nivel: WAIFU MÁXIMO ⚔️"</div>
+  </div>
+  <div class="xp-alert-btns"><button class="xp-push-btn" onclick="closeAlert('ap-asuna1')">OwO cerrar</button></div>
+</div>
+
+<div class="xp-alert anime-popup" id="ap-asuna2" style="top:200px;left:700px;width:220px">
+  <div class="xp-titlebar" style="background:linear-gradient(180deg,#ff6ec7,#c44dff)" onmousedown="startDrag(event,'ap-asuna2')">
+    <div class="xp-titlebar-icon">✨</div>
+    <div class="xp-titlebar-text">asuna2.png — Vista previa</div>
+    <div class="xp-titlebar-btns"><div class="xp-btn-win xp-btn-close" onclick="closeAlert('ap-asuna2')">✕</div></div>
+  </div>
+  <div style="text-align:center;padding:8px 6px 6px">
+    <img src="img/asuna2.png" style="width:100%;border:2px solid #ff6ec7;display:block"/>
+    <div style="font-size:10px;margin-top:6px;color:#555;font-style:italic">"velocidad: MAX<br>daño: crítico al corazón 💘"</div>
+  </div>
+  <div class="xp-alert-btns"><button class="xp-push-btn" onclick="closeAlert('ap-asuna2')">UwU ok</button></div>
+</div>
+
+<div class="xp-alert anime-popup" id="ap-asuna3" style="top:120px;left:300px;width:220px">
+  <div class="xp-titlebar" style="background:linear-gradient(180deg,#ff8c42,#c44dff)" onmousedown="startDrag(event,'ap-asuna3')">
+    <div class="xp-titlebar-icon">🗡️</div>
+    <div class="xp-titlebar-text">CRITICAL HIT — battle.log</div>
+    <div class="xp-titlebar-btns"><div class="xp-btn-win xp-btn-close" onclick="closeAlert('ap-asuna3')">✕</div></div>
+  </div>
+  <div style="text-align:center;padding:8px 6px 6px">
+    <img src="img/asuna3.png" style="width:100%;border:2px solid #ff8c42;display:block"/>
+    <div style="font-size:10px;margin-top:6px;color:#555;font-style:italic">"ASUNA ha usado ESPADA BRILLANTE<br>¡Es súper efectivo! 💥"</div>
+  </div>
+  <div class="xp-alert-btns"><button class="xp-push-btn" onclick="closeAlert('ap-asuna3')">continuar</button></div>
+</div>
+
+<div class="xp-alert anime-popup" id="ap-asuna4" style="top:300px;left:500px;width:220px">
+  <div class="xp-titlebar" style="background:linear-gradient(180deg,#ff4466,#880022)" onmousedown="startDrag(event,'ap-asuna4')">
+    <div class="xp-titlebar-icon">🔥</div>
+    <div class="xp-titlebar-text">⚠ BOSS FIGHT — final_boss.exe</div>
+    <div class="xp-titlebar-btns"><div class="xp-btn-win xp-btn-close" onclick="closeAlert('ap-asuna4')">✕</div></div>
+  </div>
+  <div style="text-align:center;padding:8px 6px 6px">
+    <img src="img/asuna4.png" style="width:100%;border:2px solid #ff4466;display:block"/>
+    <div style="font-size:10px;margin-top:6px;color:#555;font-style:italic">"HP: ∞ / ATK: ilimitado<br>debilidad: gatitos 🐱"</div>
+  </div>
+  <div class="xp-alert-btns"><button class="xp-push-btn" onclick="closeAlert('ap-asuna4')">huir (cobarde)</button></div>
+</div>
+
+<div class="xp-alert anime-popup" id="ap-anime1" style="top:160px;left:150px;width:200px">
+  <div class="xp-titlebar" style="background:linear-gradient(180deg,#ffcc00,#cc8800)" onmousedown="startDrag(event,'ap-anime1')">
+    <div class="xp-titlebar-icon">🌸</div>
+    <div class="xp-titlebar-text">pikachu_hoodie.kawaii</div>
+    <div class="xp-titlebar-btns"><div class="xp-btn-win xp-btn-close" onclick="closeAlert('ap-anime1')">✕</div></div>
+  </div>
+  <div style="text-align:center;padding:8px 6px 6px">
+    <img src="img/anime1.png" style="width:100%;border:2px solid #ffcc00;display:block"/>
+    <div style="font-size:10px;margin-top:6px;color:#555;font-style:italic">"pika pika UwU 💛<br>cuteness.dll cargando..."</div>
+  </div>
+  <div class="xp-alert-btns"><button class="xp-push-btn" onclick="closeAlert('ap-anime1')">aww 💛</button></div>
+</div>
+
+<div class="xp-alert anime-popup" id="ap-cat1" style="top:250px;left:800px;width:200px">
+  <div class="xp-titlebar" style="background:linear-gradient(180deg,#00ccaa,#006655)" onmousedown="startDrag(event,'ap-cat1')">
+    <div class="xp-titlebar-icon">🐱</div>
+    <div class="xp-titlebar-text">cat1.exe — neko system</div>
+    <div class="xp-titlebar-btns"><div class="xp-btn-win xp-btn-close" onclick="closeAlert('ap-cat1')">✕</div></div>
+  </div>
+  <div style="text-align:center;padding:8px 6px 6px">
+    <img src="img/cat1.png" style="width:100%;border:2px solid #00ccaa;display:block"/>
+    <div style="font-size:10px;margin-top:6px;color:#555;font-style:italic">"neko detectado en el sistema<br>¿deseas acariciar? 🐾"</div>
+  </div>
+  <div class="xp-alert-btns">
+    <button class="xp-push-btn" onclick="closeAlert('ap-cat1')">sí UwU</button>
+    <button class="xp-push-btn" onclick="closeAlert('ap-cat1')">sí OwO</button>
+  </div>
+</div>
+
+<div class="xp-alert anime-popup" id="ap-catcalling" style="top:80px;left:750px;width:210px">
+  <div class="xp-titlebar" style="background:linear-gradient(180deg,#ff6ec7,#ff2288)" onmousedown="startDrag(event,'ap-catcalling')">
+    <div class="xp-titlebar-icon">📞</div>
+    <div class="xp-titlebar-text">catcalling.wav — reproductor</div>
+    <div class="xp-titlebar-btns"><div class="xp-btn-win xp-btn-close" onclick="closeAlert('ap-catcalling')">✕</div></div>
+  </div>
+  <div style="text-align:center;padding:8px 6px 6px">
+    <img src="img/catcalling.png" style="width:100%;border:2px solid #ff6ec7;display:block"/>
+    <div style="font-size:10px;margin-top:6px;color:#555;font-style:italic">"reproduciendo: Wannacry.mp3<br>by Ninajirachi & Porter 🎵"</div>
+  </div>
+  <div class="xp-alert-btns"><button class="xp-push-btn" onclick="closeAlert('ap-catcalling')">🎵 escuchar</button></div>
+</div>
+
+<div class="xp-alert anime-popup" id="ap-cattiempo" style="top:340px;left:200px;width:210px">
+  <div class="xp-titlebar" style="background:linear-gradient(180deg,#44aaff,#0055cc)" onmousedown="startDrag(event,'ap-cattiempo')">
+    <div class="xp-titlebar-icon">⛅</div>
+    <div class="xp-titlebar-text">cat_tiempo.exe — El Clima</div>
+    <div class="xp-titlebar-btns"><div class="xp-btn-win xp-btn-close" onclick="closeAlert('ap-cattiempo')">✕</div></div>
+  </div>
+  <div style="text-align:center;padding:8px 6px 6px">
+    <img src="img/cattiempo1.png" style="width:100%;border:2px solid #44aaff;display:block"/>
+    <div style="font-size:10px;margin-top:6px;color:#555;font-style:italic">"Chihuahua, Méx: ☀️ soleado<br>probabilidad de gatos: 100% 🐱"</div>
+  </div>
+  <div class="xp-alert-btns"><button class="xp-push-btn" onclick="closeAlert('ap-cattiempo')">ok meteólogo</button></div>
+</div>
+
+<div class="xp-alert anime-popup" id="ap-crywolf1" style="top:100px;left:900px;width:210px">
+  <div class="xp-titlebar" style="background:linear-gradient(180deg,#9b5de5,#3d0060)" onmousedown="startDrag(event,'ap-crywolf1')">
+    <div class="xp-titlebar-icon">🐺</div>
+    <div class="xp-titlebar-text">crywolf.exe — ⚠ WannaCry</div>
+    <div class="xp-titlebar-btns"><div class="xp-btn-win xp-btn-close" onclick="closeAlert('ap-crywolf1')">✕</div></div>
+  </div>
+  <div style="text-align:center;padding:8px 6px 6px">
+    <img src="img/crywolf1.png" style="width:100%;border:2px solid #9b5de5;display:block"/>
+    <div style="font-size:10px;margin-top:6px;color:#555;font-style:italic">"crywolf — artista fav 💜<br>escuchar: obligatorio 🎧"</div>
+  </div>
+  <div class="xp-alert-btns"><button class="xp-push-btn" onclick="closeAlert('ap-crywolf1')">💜 escuchar</button></div>
+</div>
+
+<div class="xp-alert anime-popup" id="ap-crywolf2" style="top:280px;left:900px;width:210px">
+  <div class="xp-titlebar" style="background:linear-gradient(180deg,#3d0060,#9b5de5)" onmousedown="startDrag(event,'ap-crywolf2')">
+    <div class="xp-titlebar-icon">🌙</div>
+    <div class="xp-titlebar-text">crywolf2.png — dark mode</div>
+    <div class="xp-titlebar-btns"><div class="xp-btn-win xp-btn-close" onclick="closeAlert('ap-crywolf2')">✕</div></div>
+  </div>
+  <div style="text-align:center;padding:8px 6px 6px">
+    <img src="img/crywolf2.png" style="width:100%;border:2px solid #3d0060;display:block"/>
+    <div style="font-size:10px;margin-top:6px;color:#555;font-style:italic">"crywolf en concierto 🎤<br>vibes: dream pop / darkwave 💜"</div>
+  </div>
+  <div class="xp-alert-btns"><button class="xp-push-btn" onclick="closeAlert('ap-crywolf2')">🎵 fav artist</button></div>
+</div>
+
+<div class="xp-alert anime-popup" id="ap-nina1" style="top:150px;left:600px;width:210px">
+  <div class="xp-titlebar" style="background:linear-gradient(180deg,#00f5d4,#008866)" onmousedown="startDrag(event,'ap-nina1')">
+    <div class="xp-titlebar-icon">🎵</div>
+    <div class="xp-titlebar-text">nina_jirachi.mp3 — Player</div>
+    <div class="xp-titlebar-btns"><div class="xp-btn-win xp-btn-close" onclick="closeAlert('ap-nina1')">✕</div></div>
+  </div>
+  <div style="text-align:center;padding:8px 6px 6px">
+    <img src="img/nina1.png" style="width:100%;border:2px solid #00f5d4;display:block"/>
+    <div style="font-size:10px;margin-top:6px;color:#555;font-style:italic">"Ninajirachi — en concierto 🎤<br>vibes: ✨ hyperpop kawaii"</div>
+  </div>
+  <div class="xp-alert-btns"><button class="xp-push-btn" onclick="closeAlert('ap-nina1')">🎵 escuchar</button></div>
+</div>
+
+<div class="xp-alert anime-popup" id="ap-scarrycat" style="top:350px;left:650px;width:200px">
+  <div class="xp-titlebar" style="background:linear-gradient(180deg,#ff4400,#880000)" onmousedown="startDrag(event,'ap-scarrycat')">
+    <div class="xp-titlebar-icon">😱</div>
+    <div class="xp-titlebar-text">SCARY_CAT.exe — ⚠ peligro</div>
+    <div class="xp-titlebar-btns"><div class="xp-btn-win xp-btn-close" onclick="closeAlert('ap-scarrycat')">✕</div></div>
+  </div>
+  <div style="text-align:center;padding:8px 6px 6px">
+    <img src="img/scarrycat.png" style="width:100%;border:2px solid #ff4400;display:block"/>
+    <div style="font-size:10px;margin-top:6px;color:#555;font-style:italic">"AMENAZA DETECTADA: gato enojado<br>nivel de peligro: maullido crítico 😿"</div>
+  </div>
+  <div class="xp-alert-btns"><button class="xp-push-btn" onclick="closeAlert('ap-scarrycat')">correr 🏃</button></div>
+</div>
+
+<div class="xp-alert anime-popup" id="ap-tifa1" style="top:90px;left:400px;width:210px">
+  <div class="xp-titlebar" style="background:linear-gradient(180deg,#ff6ec7,#880044)" onmousedown="startDrag(event,'ap-tifa1')">
+    <div class="xp-titlebar-icon">🥊</div>
+    <div class="xp-titlebar-text">tifa.exe — Final Fantasy VII</div>
+    <div class="xp-titlebar-btns"><div class="xp-btn-win xp-btn-close" onclick="closeAlert('ap-tifa1')">✕</div></div>
+  </div>
+  <div style="text-align:center;padding:8px 6px 6px">
+    <img src="img/tifa1.png" style="width:100%;border:2px solid #ff6ec7;display:block"/>
+    <div style="font-size:10px;margin-top:6px;color:#555;font-style:italic">"Tifa Lockhart ha entrado al lobby<br>HP: infinito / puños: certificados 🥊"</div>
+  </div>
+  <div class="xp-alert-btns"><button class="xp-push-btn" onclick="closeAlert('ap-tifa1')">omg tifa 😭</button></div>
+</div>
+
+<div class="xp-alert anime-popup" id="ap-tifa2" style="top:260px;left:400px;width:210px">
+  <div class="xp-titlebar" style="background:linear-gradient(180deg,#880044,#ff6ec7)" onmousedown="startDrag(event,'ap-tifa2')">
+    <div class="xp-titlebar-icon">💪</div>
+    <div class="xp-titlebar-text">tifa2.png — Midgar.bmp</div>
+    <div class="xp-titlebar-btns"><div class="xp-btn-win xp-btn-close" onclick="closeAlert('ap-tifa2')">✕</div></div>
+  </div>
+  <div style="text-align:center;padding:8px 6px 6px">
+    <img src="img/tifa2.png" style="width:100%;border:2px solid #ff6ec7;display:block"/>
+    <div style="font-size:10px;margin-top:6px;color:#555;font-style:italic">"Cloud: ¿dónde está Tifa?<br>Tifa: pateando Shinra 💪"</div>
+  </div>
+  <div class="xp-alert-btns"><button class="xp-push-btn" onclick="closeAlert('ap-tifa2')">AVALANCHE 🌿</button></div>
+</div>
+
+<!-- NUEVOS ALERTS -->
+
+<!-- VISITANTE 10000 -->
+<div class="xp-alert" id="alert-winner" style="top:180px;left:450px">
+  <div class="xp-titlebar" style="background:linear-gradient(180deg,#ff8c00,#cc5500)" onmousedown="startDrag(event,'alert-winner')">
+    <div class="xp-titlebar-icon">🎉</div>
+    <div class="xp-titlebar-text">¡¡FELICIDADES!! — Premio Especial</div>
+    <div class="xp-titlebar-btns">
+      <div class="xp-btn-win xp-btn-close" onclick="closeAlert('alert-winner')">✕</div>
+    </div>
+  </div>
+  <div class="xp-alert-body">
+    <div class="xp-alert-icon">🏆</div>
+    <div class="xp-alert-text">
+      <span class="rainbow">¡¡ERES EL VISITANTE NÚMERO 10,000!!</span><br><br>
+      🎊 Has ganado UNO (1) abrazo virtual<br>
+      🌟 Certificado de buen gusto<br>
+      🐱 Foto de gato gratis<br><br>
+      <i style="font-size:10px">*Premio no canjeable. Oferta válida en universos alternativos.</i>
+    </div>
+  </div>
+  <div class="xp-alert-btns">
+    <button class="xp-push-btn" onclick="closeAlert('alert-winner')">¡RECLAMAR! 🎁</button>
+    <button class="xp-push-btn" onclick="closeAlert('alert-winner')">No merezco esto</button>
+  </div>
+</div>
+
+<!-- VIRUS KAWAII -->
+<div class="xp-alert" id="alert-kawaii-virus" style="top:300px;left:360px">
+  <div class="xp-titlebar" style="background:linear-gradient(180deg,#ff6ec7,#c44dff)" onmousedown="startDrag(event,'alert-kawaii-virus')">
+    <div class="xp-titlebar-icon">🌸</div>
+    <div class="xp-titlebar-text">Kawaii_Virus.exe — UwU Security Center</div>
+    <div class="xp-titlebar-btns">
+      <div class="xp-btn-win xp-btn-close" onclick="closeAlert('alert-kawaii-virus')">✕</div>
+    </div>
+  </div>
+  <div class="xp-alert-body">
+    <div class="xp-alert-icon">🌸</div>
+    <div class="xp-alert-text">
+      <b>¡ALERTA CRÍTICA UwU!</b><br><br>
+      Se detectó el virus <b>cuteness_overload.dll</b><br>
+      en tu sistema.<br><br>
+      Síntomas: querer contratar a Diana,<br>
+      decir "aww" cada 3 segundos,<br>
+      y buscar gatos en Google.<br><br>
+      <b style="color:#c00">Nivel de amenaza: MÁXIMO KAWAINESS</b>
+    </div>
+  </div>
+  <div class="xp-alert-btns">
+    <button class="xp-push-btn" onclick="closeAlert('alert-kawaii-virus')">Eliminar (no funciona)</button>
+    <button class="xp-push-btn" onclick="closeAlert('alert-kawaii-virus')">UwU aceptar 🌸</button>
+  </div>
+</div>
+
+<!-- ERROR GATO -->
+<div class="xp-alert" id="alert-cat-error" style="top:250px;left:520px">
+  <div class="xp-titlebar" style="background:linear-gradient(180deg,#c00,#800)" onmousedown="startDrag(event,'alert-cat-error')">
+    <div class="xp-titlebar-icon">🐱</div>
+    <div class="xp-titlebar-text">cat.exe ha dejado de funcionar</div>
+    <div class="xp-titlebar-btns">
+      <div class="xp-btn-win xp-btn-close" onclick="closeAlert('alert-cat-error')">✕</div>
+    </div>
+  </div>
+  <div class="xp-alert-body">
+    <div class="xp-alert-icon">😿</div>
+    <div class="xp-alert-text">
+      <b>cat.exe encontró un problema.</b><br><br>
+      Error: 0xDEADMEOW<br>
+      Módulo: belly_rub.dll<br>
+      Descripción: el gato no quería<br>
+      ser acariciado en ese momento.<br><br>
+      <i style="font-size:10px">Windows buscará una solución... o no.</i>
+    </div>
+  </div>
+  <div class="xp-alert-btns">
+    <button class="xp-push-btn" onclick="closeAlert('alert-cat-error')">Intentar de nuevo</button>
+    <button class="xp-push-btn" onclick="closeAlert('alert-cat-error')">Cerrar programa</button>
+  </div>
+</div>
+
+<!-- PREMIO MEJOR PORTFOLIO -->
+<div class="xp-alert" id="alert-award" style="top:150px;left:380px">
+  <div class="xp-titlebar" style="background:linear-gradient(180deg,#c8a000,#8a6a00)" onmousedown="startDrag(event,'alert-award')">
+    <div class="xp-titlebar-icon">🥇</div>
+    <div class="xp-titlebar-text">Windows Awards 2024 — Certificado Oficial</div>
+    <div class="xp-titlebar-btns">
+      <div class="xp-btn-win xp-btn-close" onclick="closeAlert('alert-award')">✕</div>
+    </div>
+  </div>
+  <div class="xp-alert-body">
+    <div class="xp-alert-icon">🏅</div>
+    <div class="xp-alert-text">
+      Este portfolio ha ganado:<br><br>
+      🥇 <b>Mejor portfolio de Chihuahua</b><br>
+      🌸 <b>Premio UwU a la kawaiiness</b><br>
+      🐱 <b>Gato de oro 2024</b><br>
+      💅 <b>Más chida del internet</b><br><br>
+      <i style="font-size:10px">Certificado por el Instituto Nacional de Portfolios Chidos™</i>
+    </div>
+  </div>
+  <div class="xp-alert-btns">
+    <button class="xp-push-btn" onclick="closeAlert('alert-award')">Aceptar con humildad</button>
+    <button class="xp-push-btn" onclick="closeAlert('alert-award')">Ya sé, gracias 💅</button>
+  </div>
+</div>
+
+<!-- MONAS CHINAS SYSTEM -->
+<div class="xp-alert" id="alert-mona" style="top:320px;left:300px">
+  <div class="xp-titlebar" style="background:linear-gradient(180deg,#9b5de5,#6a2faa)" onmousedown="startDrag(event,'alert-mona')">
+    <div class="xp-titlebar-icon">💃</div>
+    <div class="xp-titlebar-text">mona_china.exe — Runtime</div>
+    <div class="xp-titlebar-btns">
+      <div class="xp-btn-win xp-btn-close" onclick="closeAlert('alert-mona')">✕</div>
+    </div>
+  </div>
+  <div class="xp-alert-body">
+    <div class="xp-alert-icon">🕺</div>
+    <div class="xp-alert-text">
+      Las monas chinas han iniciado sesión<br>
+      en tu escritorio.<br><br>
+      💃🕺💃🕺💃<br><br>
+      No es posible detener el baile.<br>
+      <b>El baile es inevitable.</b><br><br>
+      <i style="font-size:10px">mona_china.dll v9.5.0 — sin licencia desde 2003</i>
+    </div>
+  </div>
+  <div class="xp-alert-btns">
+    <button class="xp-push-btn" onclick="closeAlert('alert-mona')">Bailar con ellas 💃</button>
+    <button class="xp-push-btn" onclick="closeAlert('alert-mona')">Resistir (inútil)</button>
+  </div>
+</div>
+
+<!-- BSOD -->
+<div id="bsod" onclick="hideBsod()">
+  <div style="background:#fff;color:#000080;display:inline-block;padding:2px 8px;margin-bottom:20px;font-size:14px">Windows</div>
+  <p>A fatal exception 0E has occurred at 0028:C0011E36 in VXD VMM(01) +</p>
+  <p>00010E36. The current application will be terminated.</p>
+  <br>
+  <p>* Press any key to terminate the current application.</p>
+  <p>* Press CTRL+ALT+DEL again to restart your computer. You will</p>
+  <p>  lose any unsaved information in all applications.</p>
+  <br>
+  <p>          Press any key to continue _</p>
+  <br><br>
+  <p style="font-size:12px;opacity:.7">(actual cause: someone opened DO NOT OPEN 😿)</p>
+  <p style="font-size:12px;opacity:.7">click anywhere to recover</p>
+</div>
+
+<!-- START MENU -->
+<div id="start-menu">
+  <div class="sm-header">
+    <div class="sm-avatar">🐱</div>
+    <div class="sm-username">Diana Ogaz<br><span style="font-weight:400;font-size:11px;opacity:.9">LunaSh.dev</span></div>
+  </div>
+  <div class="sm-body">
+    <div class="sm-left">
+      <div class="sm-item" onclick="openWin('win-about');toggleStart()"><div class="sm-ico">🖥️</div><span><b>My Computer</b></span></div>
+      <div class="sm-item" onclick="openWin('win-skills');toggleStart()"><div class="sm-ico">📁</div><span><b>Skills</b></span></div>
+      <div class="sm-item" onclick="openWin('win-exp');toggleStart()"><div class="sm-ico">💼</div><span><b>Experience</b></span></div>
+      <div class="sm-divider"></div>
+      <div class="sm-item" onclick="openWin('win-blog');toggleStart()"><div class="sm-ico">🌐</div><span>El Jardín de Medianoche</span></div>
+      <div class="sm-item" onclick="openWin('win-social');toggleStart()"><div class="sm-ico">📧</div><span>Contact</span></div>
+      <div class="sm-item" onclick="openWin('win-cv');toggleStart()"><div class="sm-ico">📄</div><span>CV.pdf</span></div>
+    </div>
+    <div class="sm-right">
+      <div class="sm-section-title">PLACES</div>
+      <div class="sm-item" onclick="window.open('https://github.com/DianaOgaz','_blank');toggleStart()"><div class="sm-ico">🐙</div><span>GitHub</span></div>
+      <div class="sm-item" onclick="window.open('https://linkedin.com/in/diana-teresa-ogaz-escarpita','_blank');toggleStart()"><div class="sm-ico">💼</div><span>LinkedIn</span></div>
+      <div class="sm-divider"></div>
+      <div class="sm-section-title">FUN</div>
+      <div class="sm-item" onclick="spawnRandomAlert();toggleStart()"><div class="sm-ico">⚠️</div><span>Random Alert</span></div>
+      <div class="sm-item" onclick="triggerBsod();toggleStart()"><div class="sm-ico">💀</div><span>BSOD</span></div>
+    </div>
+  </div>
+  <div class="sm-footer">
+    <div class="sm-footer-btn" onclick="triggerBsod()">🔴 Shut Down</div>
+  </div>
+</div>
+
+<!-- TASKBAR -->
+<div id="taskbar">
+  <div id="start-btn" onclick="toggleStart()">
+    <span class="start-ico">🪟</span> start
+  </div>
+  <div id="taskbar-windows"></div>
+  <div id="systray">
+    <span title="Cat online">🐱</span>
+    <span title="Poetry module loaded">🥀</span>
+    <span title="Hire available">💼</span>
+    <span id="clock">00:00</span>
+  </div>
+</div>
 
 <script>
-// ── CURSOR ──────────────────────────────────────────────────
-const cursor = document.getElementById('cursor');
-const cats = ['🐱','🐈','😺','😸','🐾','😻'];
-let catIdx = 0;
-document.addEventListener('mousemove', e => {
-  cursor.style.left = e.clientX + 'px';
-  cursor.style.top  = e.clientY + 'px';
-});
-document.addEventListener('mousedown', () => cursor.classList.add('clicking'));
-document.addEventListener('mouseup',   () => cursor.classList.remove('clicking'));
-document.addEventListener('click', e => {
-  catIdx = (catIdx + 1) % cats.length;
-  cursor.textContent = cats[catIdx];
-  const emojis = ['🌸','✨','💜','🐾','⭐','💫','🌷','💗'];
-  const el = document.createElement('div');
-  el.className = 'float-emoji';
-  el.textContent = emojis[Math.floor(Math.random()*emojis.length)];
-  el.style.left = e.clientX + 'px';
-  el.style.top  = e.clientY + 'px';
-  document.body.appendChild(el);
-  setTimeout(() => el.remove(), 2100);
-});
-
-// ── STARS ───────────────────────────────────────────────────
-const starsCanvas = document.getElementById('stars-canvas');
-const sCtx = starsCanvas.getContext('2d');
-let stars = [];
-function resizeStars(){
-  starsCanvas.width = window.innerWidth;
-  starsCanvas.height = window.innerHeight;
-  stars = [];
-  const n = Math.floor(starsCanvas.width * starsCanvas.height / 3800);
-  for(let i=0;i<n;i++) stars.push({
-    x:Math.random()*starsCanvas.width,
-    y:Math.random()*starsCanvas.height*.68,
-    r:Math.random()*1.3+.2,
-    a:Math.random(),
-    da:(Math.random()*.007+.002)*(Math.random()<.5?1:-1)
-  });
+// ── CLOCK ──
+function updateClock(){
+  const now=new Date();
+  document.getElementById('clock').textContent=
+    now.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
 }
-function drawStars(){
-  sCtx.clearRect(0,0,starsCanvas.width,starsCanvas.height);
-  stars.forEach(s=>{
-    s.a += s.da;
-    if(s.a>1||s.a<.05) s.da*=-1;
-    sCtx.beginPath();
-    sCtx.arc(s.x,s.y,s.r,0,Math.PI*2);
-    sCtx.fillStyle=`rgba(255,248,231,${s.a})`;
-    sCtx.fill();
-  });
-  requestAnimationFrame(drawStars);
+setInterval(updateClock,1000); updateClock();
+
+// ── WINDOW MANAGEMENT ──
+let zTop=200;
+const taskbarEl=document.getElementById('taskbar-windows');
+const windowData={};
+
+function openWin(id){
+  const win=document.getElementById(id);
+  win.classList.add('active');
+  bringToFront(id);
+  updateTaskbar();
 }
-window.addEventListener('resize', resizeStars);
-resizeStars(); drawStars();
-
-// ── CHERRY BLOSSOM PETALS ───────────────────────────────────
-const petalCanvas = document.getElementById('petal-canvas');
-const pCtx = petalCanvas.getContext('2d');
-let petals = [];
-
-function resizePetals(){
-  petalCanvas.width  = window.innerWidth;
-  petalCanvas.height = window.innerHeight;
+function closeWin(id){
+  document.getElementById(id).classList.remove('active','front');
+  updateTaskbar();
 }
-window.addEventListener('resize', resizePetals);
-resizePetals();
-
-// Petal shapes: draw a 5-petal flower shape
-function drawPetalShape(ctx, x, y, size, angle, alpha){
-  ctx.save();
-  ctx.globalAlpha = alpha;
-  ctx.translate(x, y);
-  ctx.rotate(angle);
-
-  // Choose random petal color from palette
-  const colors = [
-    'rgba(255,182,215,1)',  // soft pink
-    'rgba(255,150,200,1)',  // mid pink
-    'rgba(255,200,230,1)',  // pale pink
-    'rgba(220,130,255,1)',  // lavender
-    'rgba(255,170,210,1)',  // peach-pink
-  ];
-  const col = colors[Math.floor(Math.random()*colors.length) % colors.length];
-  
-  // Simple oval petal
-  ctx.beginPath();
-  ctx.ellipse(0, -size*.6, size*.35, size*.65, 0, 0, Math.PI*2);
-  ctx.fillStyle = col;
-  ctx.fill();
-
-  // Tiny center highlight
-  ctx.beginPath();
-  ctx.ellipse(0, -size*.75, size*.1, size*.15, 0, 0, Math.PI*2);
-  ctx.fillStyle = 'rgba(255,240,250,0.6)';
-  ctx.fill();
-
-  ctx.restore();
+function minimizeWin(id){
+  document.getElementById(id).classList.remove('active');
+  updateTaskbar();
 }
-
-function spawnPetal(){
-  return {
-    x: Math.random() * petalCanvas.width,
-    y: -20,
-    size: Math.random()*8 + 5,
-    speedY: Math.random()*1.2 + 0.5,
-    speedX: (Math.random()-0.5)*0.8,
-    angle: Math.random()*Math.PI*2,
-    angleSpeed: (Math.random()-0.5)*0.04,
-    swing: Math.random()*2,
-    swingSpeed: Math.random()*0.025 + 0.01,
-    swingOffset: Math.random()*Math.PI*2,
-    alpha: Math.random()*0.5+0.4,
-    colorIdx: Math.floor(Math.random()*5),
-    age: 0,
-  };
-}
-
-// Pre-spawn some petals at random heights
-for(let i=0;i<38;i++){
-  const p = spawnPetal();
-  p.y = Math.random()*petalCanvas.height;
-  p.age = Math.random()*500;
-  petals.push(p);
-}
-
-const petalColors = [
-  'rgba(255,182,215,1)',
-  'rgba(255,150,200,1)',
-  'rgba(255,200,230,1)',
-  'rgba(220,130,255,1)',
-  'rgba(255,170,210,1)',
-];
-
-function drawPetals(){
-  pCtx.clearRect(0,0,petalCanvas.width,petalCanvas.height);
-
-  // spawn new petals occasionally
-  if(Math.random()<0.18) petals.push(spawnPetal());
-  // cap at 60
-  if(petals.length>60) petals.splice(0,1);
-
-  petals.forEach(p=>{
-    p.age++;
-    p.x += p.speedX + Math.sin(p.age*p.swingSpeed + p.swingOffset)*p.swing*0.06;
-    p.y += p.speedY;
-    p.angle += p.angleSpeed;
-
-    // fade out near bottom
-    let alpha = p.alpha;
-    if(p.y > petalCanvas.height - 80) alpha *= (petalCanvas.height - p.y)/80;
-
-    pCtx.save();
-    pCtx.globalAlpha = Math.max(0, alpha);
-    pCtx.translate(p.x, p.y);
-    pCtx.rotate(p.angle);
-
-    pCtx.beginPath();
-    pCtx.ellipse(0, -p.size*.55, p.size*.32, p.size*.6, 0, 0, Math.PI*2);
-    pCtx.fillStyle = petalColors[p.colorIdx];
-    pCtx.fill();
-
-    // Inner highlight
-    pCtx.beginPath();
-    pCtx.ellipse(0, -p.size*.7, p.size*.1, p.size*.14, 0, 0, Math.PI*2);
-    pCtx.fillStyle = 'rgba(255,240,252,0.55)';
-    pCtx.fill();
-
-    pCtx.restore();
-
-    // Reset petal if off screen
-    if(p.y > petalCanvas.height + 20 || p.x < -40 || p.x > petalCanvas.width + 40){
-      p.x = Math.random()*petalCanvas.width;
-      p.y = -20;
-      p.age = 0;
-    }
-  });
-
-  requestAnimationFrame(drawPetals);
-}
-drawPetals();
-
-// ── CITY LIGHTS ─────────────────────────────────────────────
-(function(){
-  const cl = document.getElementById('city-lights');
-  if(!cl) return;
-  const ctx = cl.getContext('2d');
-  // define windows as {x,y,w,h,color,on,blinkRate,phase}
-  const lights = [];
-  const cols = ['#ff6ec7','#c77dff','#00f5d4','#ffb347','#fff8d0','#9b5de5','#ff9d4d'];
-  // Seed deterministic windows scattered across city silhouette
-  // We skip the clip-path silhouette calculation and just scatter
-  // tiny rectangles in the lower half, they'll be hidden by city div anyway
-  // only visible ones are above the bg0 fill = in the building shapes
-  // We position them by "column bands" matching the city skyline heights
-  const bands = [
-    {x:.02,maxY:.55,w:.02},{x:.09,maxY:.25,w:.03},{x:.16,maxY:.2,w:.02},
-    {x:.18,maxY:.1,w:.02},{x:.25,maxY:.18,w:.02},{x:.31,maxY:.14,w:.04},
-    {x:.4,maxY:.18,w:.05},{x:.51,maxY:.08,w:.04},{x:.6,maxY:.22,w:.05},
-    {x:.67,maxY:.2,w:.04},{x:.76,maxY:.25,w:.03},{x:.84,maxY:.18,w:.03},
-    {x:.9,maxY:.3,w:.03},{x:.96,maxY:.45,w:.02},
-  ];
-  bands.forEach(b=>{
-    const rows = Math.floor((1-b.maxY)/0.07);
-    for(let r=0;r<rows;r++){
-      const cols2 = Math.floor(b.w/0.012);
-      for(let c=0;c<cols2;c++){
-        if(Math.random()<.55){
-          lights.push({
-            xFrac: b.x + c*0.013 + Math.random()*.005,
-            yFrac: b.maxY + r*0.07 + Math.random()*.04,
-            w: Math.random()*3+2, h: Math.random()*4+3,
-            color: cols[Math.floor(Math.random()*cols.length)],
-            on: Math.random()>.35,
-            blinkRate: Math.random()*.004+.001,
-            phase: Math.random()*Math.PI*2,
-          });
-        }
-      }
-    }
-  });
-
-  let frame=0;
-  function drawLights(){
-    cl.width = cl.offsetWidth;
-    cl.height = cl.offsetHeight;
-    ctx.clearRect(0,0,cl.width,cl.height);
-    frame++;
-    lights.forEach(l=>{
-      // subtle blink
-      const flicker = Math.sin(frame*l.blinkRate + l.phase);
-      if(flicker > .92 && Math.random()<.05) l.on = !l.on;
-      if(!l.on){ return; }
-      const x = l.xFrac * cl.width;
-      const y = l.yFrac * cl.height;
-      const alpha = .55 + .35*((flicker+1)/2);
-      ctx.save();
-      ctx.globalAlpha = alpha;
-      // glow
-      const grd = ctx.createRadialGradient(x+l.w/2,y+l.h/2,0,x+l.w/2,y+l.h/2,l.w*2.5);
-      grd.addColorStop(0, l.color);
-      grd.addColorStop(1, 'transparent');
-      ctx.fillStyle = grd;
-      ctx.fillRect(x-l.w,y-l.h,l.w*3,l.h*3);
-      // core
-      ctx.globalAlpha = alpha*.9;
-      ctx.fillStyle = l.color;
-      ctx.fillRect(x,y,l.w,l.h);
-      ctx.restore();
-    });
+function maximizeWin(id){
+  const win=document.getElementById(id);
+  if(win.dataset.maxed==='1'){
+    win.style.cssText=win.dataset.prev||'';
+    win.dataset.maxed='0';
+  }else{
+    win.dataset.prev=win.style.cssText;
+    win.style.cssText='top:0;left:0;width:100vw;height:calc(100vh - 30px);border-radius:0';
+    win.dataset.maxed='1';
   }
-  function loop(){ drawLights(); requestAnimationFrame(loop); }
-  loop();
+  bringToFront(id);
+}
+function bringToFront(id){
+  document.querySelectorAll('.xp-window,.xp-alert').forEach(w=>w.classList.remove('front'));
+  const win=document.getElementById(id);
+  win.style.zIndex=++zTop;
+  win.classList.add('front');
+}
+function updateTaskbar(){
+  taskbarEl.innerHTML='';
+  document.querySelectorAll('.xp-window.active').forEach(win=>{
+    const titleEl=win.querySelector('.xp-titlebar-text');
+    const ico=win.querySelector('.xp-titlebar-icon');
+    const title=titleEl?titleEl.textContent.split('—')[0].trim():'Window';
+    const div=document.createElement('div');
+    div.className='taskbar-item'+(win.classList.contains('front')?' active-task':'');
+    div.innerHTML=`${ico?ico.textContent:''} ${title}`;
+    div.onclick=()=>{
+      if(win.classList.contains('front')&&win.classList.contains('active')){
+        win.classList.remove('active'); updateTaskbar();
+      }else{
+        win.classList.add('active'); bringToFront(win.id); updateTaskbar();
+      }
+    };
+    taskbarEl.appendChild(div);
+  });
+}
+
+// ── DRAGGING ──
+let drag=null,dx=0,dy=0;
+function startDrag(e,id){
+  const win=document.getElementById(id);
+  bringToFront(id); updateTaskbar();
+  drag=win; dx=e.clientX-win.offsetLeft; dy=e.clientY-win.offsetTop;
+  e.preventDefault();
+}
+document.addEventListener('mousemove',e=>{
+  if(!drag)return;
+  drag.style.left=(e.clientX-dx)+'px';
+  drag.style.top=Math.max(0,e.clientY-dy)+'px';
+});
+document.addEventListener('mouseup',()=>drag=null);
+
+// ── GLITCH SLICES ──
+(function(){
+  const bg=document.getElementById('glitch-bg');
+  // lots of slices at different speeds
+  const configs=[
+    {h:3,dur:.4,chaos:60},{h:6,dur:.7,chaos:40},{h:2,dur:.3,chaos:80},
+    {h:12,dur:.5,chaos:35},{h:4,dur:.25,chaos:70},{h:8,dur:.6,chaos:45},
+    {h:2,dur:.35,chaos:90},{h:5,dur:.45,chaos:50},{h:15,dur:.8,chaos:30},
+    {h:3,dur:.28,chaos:75},{h:7,dur:.55,chaos:42},{h:2,dur:.32,chaos:88},
+    {h:4,dur:.42,chaos:60},{h:9,dur:.65,chaos:38},{h:3,dur:.22,chaos:95},
+    {h:6,dur:.48,chaos:55},{h:11,dur:.72,chaos:28},{h:2,dur:.38,chaos:82},
+    {h:4,dur:.52,chaos:48},{h:3,dur:.27,chaos:92},
+  ];
+  configs.forEach((c,i)=>{
+    const s=document.createElement('div');
+    s.className='glitch-slice';
+    const top=Math.random()*100;
+    const delay=(Math.random()*c.dur).toFixed(3);
+    s.style.cssText=`top:${top}%;height:${c.h}px;animation-duration:${c.dur}s;animation-delay:-${delay}s`;
+    bg.appendChild(s);
+  });
+
+  // glitch ocasional — estético, no seizure
+  let glitching=false;
+  function softGlitch(){
+    if(glitching) return;
+    glitching=true;
+    const filters=['hue-rotate(90deg)','hue-rotate(180deg)','saturate(3) hue-rotate(45deg)','contrast(1.8)'];
+    bg.style.filter=filters[Math.floor(Math.random()*filters.length)];
+    bg.style.transform=`translateX(${(Math.random()-.5)*10}px)`;
+    setTimeout(()=>{
+      bg.style.filter='none';
+      bg.style.transform='';
+      glitching=false;
+    }, 80+Math.random()*120);
+  }
+  // dispara cada ~2s con 40% de probabilidad
+  setInterval(()=>{ if(Math.random()<.4) softGlitch(); }, 2000);
 })();
 
-// ── SMOOTH NAV ──────────────────────────────────────────────
-document.querySelectorAll('a[href^="#"]').forEach(a=>{
-  a.addEventListener('click', e=>{
-    const t = document.querySelector(a.getAttribute('href'));
-    if(t){ e.preventDefault(); t.scrollIntoView({behavior:'smooth'}); }
-  });
+// ── ALERTS ──
+const animePopups=[
+  'ap-asuna1','ap-asuna2','ap-asuna3','ap-asuna4',
+  'ap-anime1','ap-cat1','ap-catcalling','ap-cattiempo',
+  'ap-crywolf1','ap-crywolf2','ap-nina1','ap-scarrycat',
+  'ap-tifa1','ap-tifa2'
+];
+const alerts=[
+  'alert-cat','alert-virus','alert-update','alert-hire',
+  'alert-winner','alert-kawaii-virus','alert-cat-error','alert-award','alert-mona',
+  ...animePopups
+];
+
+function closeAlert(id){
+  document.getElementById(id).classList.remove('active');
+}
+function openAlert(id){
+  const el=document.getElementById(id);
+  if(!el)return;
+  el.classList.add('active');
+  bringToFront(id);
+}
+function spawnRandomAlert(){
+  if(spawnPaused) return;
+  const id=alerts[Math.floor(Math.random()*alerts.length)];
+  const el=document.getElementById(id);
+  if(!el)return;
+  el.style.top=(60+Math.random()*280)+'px';
+  el.style.left=(80+Math.random()*Math.max(200,innerWidth-380))+'px';
+  openAlert(id);
+}
+
+// ── SPARKLE TRAIL ──
+document.addEventListener('mousemove',e=>{
+  if(Math.random()>.92){
+    const sp=document.createElement('div');
+    sp.className='sparkle';
+    sp.textContent=['✨','🌸','⭐','💫','🐾','UwU','OwO'][Math.floor(Math.random()*7)];
+    sp.style.cssText=`left:${e.clientX}px;top:${e.clientY}px`;
+    document.body.appendChild(sp);
+    setTimeout(()=>sp.remove(),1300);
+  }
 });
+
+// ── ANIME POPUP SPAWNER ──
+// open all anime popups sequentially on load with delay
+animePopups.forEach((id,i)=>{
+  setTimeout(()=>{
+    const el=document.getElementById(id);
+    if(!el)return;
+    el.style.top=(60+Math.random()*320)+'px';
+    el.style.left=(130+Math.random()*Math.max(100,innerWidth-400))+'px';
+    openAlert(id);
+  }, 1500+i*900);
+});
+
+// Auto-spawn alerts periodically
+const alertQueue=[...alerts].sort(()=>Math.random()-.5);
+(function spawnNext(){
+  if(!spawnPaused && alertQueue.length){
+    const id=alertQueue.shift();
+    const el=document.getElementById(id);
+    if(el){
+      el.style.top=(60+Math.random()*280)+'px';
+      el.style.left=(80+Math.random()*Math.max(200,innerWidth-380))+'px';
+      openAlert(id);
+    }
+  }
+  if(!alertQueue.length) alertQueue.push(...alerts);
+  setTimeout(spawnNext,3500+Math.random()*4000);
+})()
+
+// ── START MENU ──
+function toggleStart(){
+  document.getElementById('start-menu').classList.toggle('open');
+}
+document.addEventListener('click',e=>{
+  if(!e.target.closest('#start-menu')&&!e.target.closest('#start-btn'))
+    document.getElementById('start-menu').classList.remove('open');
+});
+
+// ── BSOD ──
+function triggerBsod(){
+  document.getElementById('bsod').style.display='block';
+}
+function hideBsod(){
+  document.getElementById('bsod').style.display='none';
+}
+
+// ── CAT ──
+const catEmojis=['🐱','🐈','😺','😸','😻','🐾','😹'];
+let catE=0;
+function catClick(){
+  catE=(catE+1)%catEmojis.length;
+  document.getElementById('desktop-cat').textContent=catEmojis[catE];
+  spawnRandomAlert();
+}
+
+function petCat(){
+  closeAlert('alert-cat');
+  document.getElementById('desktop-cat').style.animation='none';
+  setTimeout(()=>document.getElementById('desktop-cat').style.animation='catbounce 2s ease-in-out infinite',100);
+  openAlert('alert-update');
+}
+
+// ── MODO SERIO ──
+const BASURA_ALERTS=[
+  'alert-cat','alert-virus','alert-update','alert-hire',
+  'alert-winner','alert-kawaii-virus','alert-cat-error','alert-award','alert-mona',
+  'ap-asuna1','ap-asuna2','ap-asuna3','ap-asuna4',
+  'ap-anime1','ap-cat1','ap-catcalling','ap-cattiempo',
+  'ap-crywolf1','ap-crywolf2','ap-nina1','ap-scarrycat',
+  'ap-tifa1','ap-tifa2'
+];
+const CV_WINS=['win-about','win-skills','win-exp','win-cv','win-blog','win-social'];
+
+let modoSerio=false;
+let spawnPaused=false;
+
+function toggleModoSerio(){
+  modoSerio = !modoSerio;
+  const btn     = document.getElementById('modo-serio-btn');
+  const sad     = document.getElementById('sad-wallpaper');
+  const marquee = document.getElementById('marquee-strip');
+  const uwu     = document.getElementById('uwu-badge');
+  const dcat    = document.getElementById('desktop-cat');
+  const glitchEls = ['glitch-bg','glitch-rgb','glitch-tears','glitch-noise'];
+
+  if(modoSerio){
+    spawnPaused = true;
+
+    // ocultar TODO con clase serio-hidden
+    document.querySelectorAll('.xp-window, .xp-alert').forEach(el=>{
+      el.classList.add('serio-hidden');
+    });
+
+    // ocultar kawaii elements
+    [marquee, uwu, dcat].forEach(el=>{ if(el) el.style.visibility='hidden'; });
+    glitchEls.forEach(id=>{ const el=document.getElementById(id); if(el) el.style.visibility='hidden'; });
+
+    // mostrar pantalla triste
+    sad.classList.add('visible');
+
+    // abrir ventanas CV (quitarles serio-hidden primero)
+    CV_WINS.forEach((id,i)=>{
+      setTimeout(()=>{
+        const win = document.getElementById(id);
+        if(!win) return;
+        win.classList.remove('serio-hidden');
+        openWin(id);
+      }, 300 + i*250);
+    });
+
+    btn.classList.add('serio-on');
+    btn.textContent = '🌸 Modo Kawaii';
+
+  } else {
+    spawnPaused = false;
+
+    // quitar serio-hidden de todo
+    document.querySelectorAll('.serio-hidden').forEach(el=>{
+      el.classList.remove('serio-hidden');
+    });
+
+    // cerrar ventanas cv
+    CV_WINS.forEach(id => closeWin(id));
+
+    // restaurar kawaii
+    [marquee, uwu, dcat].forEach(el=>{ if(el) el.style.visibility=''; });
+    glitchEls.forEach(id=>{ const el=document.getElementById(id); if(el) el.style.visibility=''; });
+
+    // ocultar pantalla triste
+    sad.classList.remove('visible');
+
+    btn.classList.remove('serio-on');
+    btn.textContent = '💼 Modo Serio';
+
+    // relanzar caos
+    setTimeout(()=>spawnRandomAlert(), 500);
+    setTimeout(()=>spawnRandomAlert(), 1500);
+    setTimeout(()=>spawnRandomAlert(), 2500);
+  }
+}
+window.toggleModoSerio = toggleModoSerio;
+
+// ── BIND MODO SERIO BTN ──
+document.getElementById('modo-serio-btn').addEventListener('click', function(e){
+  e.stopPropagation();
+  toggleModoSerio();
+});
+
+// ── OPEN ABOUT BY DEFAULT ──
+setTimeout(()=>openWin('win-about'),400);
+setTimeout(()=>openWin('win-skills'),700);
 </script>
 </body>
 </html>
